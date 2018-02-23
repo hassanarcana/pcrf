@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="pcrf_req_res_logs">
+   <log level="full"/>
+   <log level="custom">
+      <property name="logging" value="pcrf_req_res_logs"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="corelationID"
+                expression="get-property('corid')"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Request"
+                expression="get-property('requestBody')"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Response"
+                expression="get-property('ResponsePayload')"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="RequestDateTime"
+                expression="get-property('CURR_DATE')"/>
+   </log>
+   <dbreport>
+      <connection>
+         <pool>
+            <dsName>jdbc/pcrf</dsName>
+         </pool>
+      </connection>
+      <statement>
+         <sql>
+			INSERT INTO pcrf_req_res_logs(correlation_id,request,response, request_datetime, response_datetime, status) VALUES (?,?,?,?,NOW(),?)
+		</sql>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="get-property('corid')"
+                    type="VARCHAR"/>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="get-property('requestBody')"
+                    type="VARCHAR"/>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="get-property('ResponsePayload')"
+                    type="VARCHAR"/>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="get-property('requestDatetime')"
+                    type="VARCHAR"/>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="get-property('resStatus')"
+                    type="VARCHAR"/>
+      </statement>
+   </dbreport>
+</sequence>

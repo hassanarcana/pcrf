@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="PcrfSessionManagement">
+   <payloadFactory media-type="xml">
+      <format>
+         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
+            <soapenv:Header/>
+            <soapenv:Body>
+               <rm:LGI>
+                  <inPara>
+                     <Login>
+                        <attribute>
+                           <key>OPNAME</key>
+                           <value>APIGW</value>
+                        </attribute>
+                        <attribute>
+                           <key>PWD</key>
+                           <value>Jazz@AP1GW</value>
+                        </attribute>
+                     </Login>
+                  </inPara>
+               </rm:LGI>
+            </soapenv:Body>
+         </soapenv:Envelope>
+      </format>
+      <args/>
+   </payloadFactory>
+   <log level="full"/>
+   <header name="Action" scope="transport" value=""/>
+   <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
+   <call>
+      <endpoint name="PCRFEP">
+         <address uri="http://10.226.66.28:8080/axis/services/ScfPccSoapServiceEndpointPort"
+                  format="soap11">
+            <timeout>
+               <duration>10000</duration>
+               <responseAction>fault</responseAction>
+            </timeout>
+            <suspendOnFailure>
+               <errorCodes>-1</errorCodes>
+               <initialDuration>0</initialDuration>
+               <progressionFactor>1.0</progressionFactor>
+               <maximumDuration>0</maximumDuration>
+            </suspendOnFailure>
+            <markForSuspension>
+               <errorCodes>-1</errorCodes>
+            </markForSuspension>
+         </address>
+      </endpoint>
+   </call>
+   <log level="full"/>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="RESPONSE_STATUS_CODE"
+             expression="$axis2:HTTP_SC"/>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="LOCATION_PROP"
+             expression="$trp:Location"/>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="resultCodeLogin"
+             expression="//result/resultCode"
+             scope="default"
+             type="STRING"/>
+   <log level="custom">
+      <property name="Login Call" value="Starts"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="----RECEIVED STATUS CODE----"
+                expression="get-property('RESPONSE_STATUS_CODE')"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="----RECEIVED LOCALTION PROPERTY----"
+                expression="get-property('LOCATION_PROP')"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="----LOGIN API RESPONSE----"
+                expression="get-property('resultCodeLogin')"/>
+   </log>
+   <dbreport>
+      <connection>
+         <pool>
+            <dsName>jdbc/pcrf</dsName>
+         </pool>
+      </connection>
+      <statement>
+         <sql>INSERT INTO login_session(location_prop, login_datetime,resultCode)  values (?, NOW(), ?)</sql>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="$ctx:LOCATION_PROP"
+                    type="VARCHAR"/>
+         <parameter xmlns:ns="http://org.apache.synapse/xsd"
+                    expression="$ctx:resultCodeLogin"
+                    type="VARCHAR"/>
+      </statement>
+   </dbreport>
+</sequence>
