@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse"
+     name="aapcrfloginsessiontest"
+     context="/pcrftest">
+   <resource methods="GET" uri-template="/test">
+      <inSequence>
+         <log level="custom">
+            <property name="value is " value="test call "/>
+            <property name="----RECEIVED STATUS CODE----"
+                      expression="get-property('RESPONSE_STATUS_CODE')"/>
+            <property name="----RECEIVED LOCALTION PROPERTY----"
+                      expression="get-property('LOCATION_PROP')"/>
+         </log>
+         <dblookup>
+            <connection>
+               <pool>
+                  <dsName>jdbc/pcrf</dsName>
+               </pool>
+            </connection>
+            <statement>
+               <sql>select location_prop from login_session ORDER BY login_id desc limit 1</sql>
+               <result name="LOCATION_PROP" column="location_prop"/>
+            </statement>
+         </dblookup>
+         <log level="custom">
+            <property name="value is " expression="get-property('LOCATION_PROP')"/>
+            <property name="----RECEIVED STATUS CODE----"
+                      expression="get-property('RESPONSE_STATUS_CODE')"/>
+            <property name="----After RECEIVED LOCALTION PROPERTY----"
+                      expression="get-property('LOCATION_PROP')"/>
+         </log>
+         <payloadFactory media-type="xml" description="login_payload">
+            <format>
+               <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
+                  <soapenv:Header/>
+                  <soapenv:Body>
+                     <rm:getSubscriberAllInf>
+                        <inPara>
+                           <subscriber><!--Identifier of the subscriber--><attribute>
+                                 <key>usrIdentifier</key>
+                                 <value>923335685413</value>
+                              </attribute>
+                           </subscriber>
+                        </inPara>
+                     </rm:getSubscriberAllInf>
+                  </soapenv:Body>
+               </soapenv:Envelope>
+            </format>
+            <args/>
+         </payloadFactory>
+         <log level="full">
+            <property name="----CallingGetSubscriber----" value="Request"/>
+         </log>
+         <header name="Action" scope="transport" value="Notification"/>
+         <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
+         <property name="uri.var.httpendpointurl"
+                   expression="get-property('LOCATION_PROP')"/>
+         <header xmlns:m0="http://services.samples"
+                 xmlns:m1="http://services.samples/xsd"
+                 name="To"
+                 expression="get-property('LOCATION_PROP')"/>
+         <call>
+            <endpoint name="PCRFEP">
+               <default format="soap11">
+                  <timeout>
+                     <duration>10000</duration>
+                     <responseAction>fault</responseAction>
+                  </timeout>
+                  <suspendOnFailure>
+                     <errorCodes>-1</errorCodes>
+                     <initialDuration>0</initialDuration>
+                     <progressionFactor>1.0</progressionFactor>
+                     <maximumDuration>0</maximumDuration>
+                  </suspendOnFailure>
+                  <markForSuspension>
+                     <errorCodes>-1</errorCodes>
+                  </markForSuspension>
+               </default>
+            </endpoint>
+         </call>
+         <log level="custom">
+            <property name="value is " expression="get-property('LOCATION_PROP')"/>
+            <property name="----RECEIVED STATUS CODE----"
+                      expression="get-property('RESPONSE_STATUS_CODE')"/>
+            <property name="----After getinfo RECEIVED LOCALTION PROPERTY----"
+                      expression="get-property('LOCATION_PROP')"/>
+         </log>
+         <log level="full"/>
+         <payloadFactory media-type="xml" description="login_payload">
+            <format>
+               <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
+                  <soapenv:Header/>
+                  <soapenv:Body>
+                     <rm:addSubscriber>
+                        <inPara>
+                           <subscriber><!-- Subscriber Information--><attribute>
+                                 <key>usrIdentifier</key>
+                                 <value>923335685413</value>
+                              </attribute>
+                           </subscriber>
+                        </inPara>
+                     </rm:addSubscriber>
+                  </soapenv:Body>
+               </soapenv:Envelope>
+            </format>
+            <args/>
+         </payloadFactory>
+         <log level="full">
+            <property name="----CallingADDSubscriber----" value="Request"/>
+         </log>
+         <header name="Action" scope="transport" value="Notification"/>
+         <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
+         <property name="uri.var.httpendpointurl"
+                   expression="get-property('LOCATION_PROP')"/>
+         <header xmlns:m0="http://services.samples"
+                 xmlns:m1="http://services.samples/xsd"
+                 name="To"
+                 expression="get-property('LOCATION_PROP')"/>
+         <call>
+            <endpoint name="PCRFEP">
+               <default format="soap11">
+                  <timeout>
+                     <duration>10000</duration>
+                     <responseAction>fault</responseAction>
+                  </timeout>
+                  <suspendOnFailure>
+                     <errorCodes>-1</errorCodes>
+                     <initialDuration>0</initialDuration>
+                     <progressionFactor>1.0</progressionFactor>
+                     <maximumDuration>0</maximumDuration>
+                  </suspendOnFailure>
+                  <markForSuspension>
+                     <errorCodes>-1</errorCodes>
+                  </markForSuspension>
+               </default>
+            </endpoint>
+         </call>
+         <log level="full">
+            <property name="----CalledGetSubscriber----" value="Response"/>
+         </log>
+         <respond/>
+      </inSequence>
+   </resource>
+</api>
