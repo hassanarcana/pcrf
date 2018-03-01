@@ -1,232 +1,239 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <proxy xmlns="http://ws.apache.org/ns/synapse"
        name="pcrfTest"
-       transports="http https"
-       startOnLoad="true">
-   <description/>
+       startOnLoad="true"
+       statistics="disable"
+       trace="disable"
+       transports="http,https">
    <target>
       <inSequence>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="msisdn"
                    expression="$body//p:input/p:msisdn"
+                   name="msisdn"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="srvName"
                    expression="$body//p:input/p:serviceName"
+                   name="srvName"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="corid"
                    expression="$body//p:input/p:correlationid"
+                   name="corid"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="transactiontimestamp"
                    expression="$body//p:input/p:transactiontimestamp"
+                   name="transactiontimestamp"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="srvStartDateTime"
                    expression="$body//p:input/p:serviceStartDateTime"
+                   name="srvStartDateTime"
                    scope="default"
                    type="STRING"/>
+         <property xmlns:fn="http://www.w3.org/2005/xpath-functions"
+                   expression="fn:replace(fn:substring-before($ctx:srvStartDateTime,'+'),'[-:T]','')"
+                   name="srvStartDateTime"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="srvEndDateTime"
                    expression="$body//p:input/p:serviceEndDateTime"
+                   name="srvEndDateTime"
                    scope="default"
                    type="STRING"/>
+         <property xmlns:fn="http://www.w3.org/2005/xpath-functions"
+                   expression="fn:replace(fn:substring-before($ctx:srvEndDateTime,'+'),'[-:T]','')"
+                   name="srvEndDateTime"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="quotaName"
                    expression="$body//p:input/p:quotaName"
+                   name="quotaName"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="rechargedValue"
                    expression="$body//p:input/p:rechargedValue"
+                   name="rechargedValue"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="userState"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='userState']/p:attrValue"
+                   name="userState"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrHomeSrvZone"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrHomeSrvZone']/p:attrValue"
+                   name="usrHomeSrvZone"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrPaidType"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrPaidType']/p:attrValue"
+                   name="usrPaidType"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrCategory"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrCategory']/p:attrValue"
+                   name="usrCategory"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrStation"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrStation']/p:attrValue"
+                   name="usrStation"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrEmailAddress"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrEmailAddress']/p:attrValue"
+                   name="usrEmailAddress"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrContactMethod"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrContactMethod']/p:attrValue"
+                   name="usrContactMethod"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrBillCycleDate"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrBillCycleDate']/p:attrValue"
+                   name="usrBillCycleDate"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrSubNetType"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrSubNetType']/p:attrValue"
+                   name="usrSubNetType"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="usrBirthday"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='usrBirthday']/p:attrValue"
+                   name="usrBirthday"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="srvUsageState"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='srvUsageState']/p:attrValue"
+                   name="srvUsageState"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="srvRoamingType"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='srvRoamingType']/p:attrValue"
+                   name="srvRoamingType"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="qtaClass"
                    expression="$body//p:input/p:optionalAttributes/p:attribute[p:attrName='qtaClass']/p:attrValue"
+                   name="qtaClass"
                    scope="default"
                    type="STRING"/>
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
-                   name="requestBody"
                    expression="$body"
+                   name="requestBody"
                    scope="default"
                    type="STRING"/>
-         <property name="CURR_DATE"
-                   expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyyMMdd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss+0500'))"/>
-         <property name="requestDatetime"
-                   expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyy-MM-dd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss'))"/>
+         <property expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyy-MM-dd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss+05:00'))"
+                   name="CURR_DATE"/>
+         <property expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyy-MM-dd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss'))"
+                   name="requestDatetime"/>
          <filter xpath="$ctx:userState ='' or string-length($ctx:userState) = 0">
             <then>
-               <property name="userState" value="1" scope="default" type="STRING"/>
+               <property name="userState" scope="default" type="STRING" value="1"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrHomeSrvZone ='' or string-length($ctx:usrHomeSrvZone) = 0">
             <then>
                <property name="usrHomeSrvZone"
-                         value="NULL"
                          scope="default"
-                         type="STRING"/>
+                         type="STRING"
+                         value="NULL"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrPaidType ='' or string-length($ctx:usrPaidType) = 0">
             <then>
                <property name="usrPaidType"
-                         value="2147483646"
                          scope="default"
-                         type="STRING"/>
+                         type="STRING"
+                         value="2147483646"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrCategory ='' or string-length($ctx:usrCategory) = 0">
             <then>
-               <property name="usrCategory" value="NULL" scope="default" type="STRING"/>
+               <property name="usrCategory" scope="default" type="STRING" value="NULL"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrStation ='' or string-length($ctx:usrStation) = 0">
             <then>
-               <property name="usrStation" value="1" scope="default" type="STRING"/>
+               <property name="usrStation" scope="default" type="STRING" value="1"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrEmailAddress ='' or string-length($ctx:usrEmailAddress) = 0">
             <then>
                <property name="usrEmailAddress"
-                         value="test@gmail.com"
                          scope="default"
-                         type="STRING"/>
+                         type="STRING"
+                         value="test@gmail.com"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrContactMethod ='' or string-length($ctx:usrContactMethod) = 0">
             <then>
-               <property name="usrContactMethod" value="1" scope="default" type="STRING"/>
+               <property name="usrContactMethod" scope="default" type="STRING" value="1"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrBillCycleDate ='' or string-length($ctx:usrBillCycleDate) = 0">
             <then>
                <property name="usrBillCycleDate"
-                         value="-1"
                          scope="default"
-                         type="STRING"/>
+                         type="STRING"
+                         value="-1"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrSubNetType ='' or string-length($ctx:usrSubNetType) = 0">
             <then>
-               <property name="usrSubNetType" value="0" scope="default" type="STRING"/>
+               <property name="usrSubNetType" scope="default" type="STRING" value="0"/>
             </then>
          </filter>
          <filter xpath="$ctx:usrBirthday ='' or string-length($ctx:usrBirthday) = 0">
             <then>
-               <property name="usrBirthday" value="-1" scope="default" type="STRING"/>
+               <property name="usrBirthday" scope="default" type="STRING" value="-1"/>
             </then>
          </filter>
          <filter xpath="$ctx:srvUsageState ='' or string-length($ctx:srvUsageState) = 0">
             <then>
-               <property name="srvUsageState" value="1" scope="default" type="STRING"/>
+               <property name="srvUsageState" scope="default" type="STRING" value="1"/>
             </then>
          </filter>
          <filter xpath="$ctx:srvRoamingType ='' or string-length($ctx:srvRoamingType) = 0">
             <then>
-               <property name="srvRoamingType" value="-1" scope="default" type="STRING"/>
+               <property name="srvRoamingType" scope="default" type="STRING" value="-1"/>
             </then>
          </filter>
          <filter xpath="$ctx:qtaClass ='' or string-length($ctx:qtaClass) = 0">
             <then>
-               <property name="qtaClass" value="0" scope="default" type="STRING"/>
+               <property name="qtaClass" scope="default" type="STRING" value="0"/>
             </then>
          </filter>
          <log level="custom">
-            <property name="----CorrelationId----" expression="get-property('corid')"/>
-            <property name="----msisdn----" expression="get-property('msisdn')"/>
-            <property name="----ServiceName----" expression="get-property('srvName')"/>
-            <property name="----transactiontimestamp----"
-                      expression="get-property('transactiontimestamp')"/>
-            <property name="----srvStartDateTime----"
-                      expression="get-property('srvStartDateTime')"/>
-            <property name="----srvEndDateTime----"
-                      expression="get-property('srvEndDateTime')"/>
-            <property name="----quotaName----" expression="get-property('quotaName')"/>
-            <property name="----rechargedValue----"
-                      expression="get-property('rechargedValue')"/>
-            <property name="----userState----" expression="get-property('userState')"/>
-            <property name="----usrHomeSrvZone----"
-                      expression="get-property('usrHomeSrvZone')"/>
-            <property name="----usrPaidType----" expression="get-property('usrPaidType')"/>
-            <property name="----usrCategory----" expression="get-property('usrCategory')"/>
-            <property name="----usrStation----" expression="get-property('usrStation')"/>
-            <property name="----usrEmailAddress----"
-                      expression="get-property('usrEmailAddress')"/>
-            <property name="----usrContactMethod----"
-                      expression="get-property('usrContactMethod')"/>
-            <property name="----usrBillCycleDate----"
-                      expression="get-property('usrBillCycleDate')"/>
-            <property name="----usrSubNetType----" expression="get-property('usrSubNetType')"/>
-            <property name="----usrBirthday----" expression="get-property('usrBirthday')"/>
-            <property name="----srvRoamingType----"
-                      expression="get-property('srvRoamingType')"/>
-            <property name="----qtaClass----" expression="get-property('qtaClass')"/>
+            <property expression="get-property('corid')" name="----CorrelationId----"/>
+            <property expression="get-property('msisdn')" name="----msisdn----"/>
+            <property expression="get-property('srvName')" name="----ServiceName----"/>
+            <property expression="get-property('transactiontimestamp')"
+                      name="----transactiontimestamp----"/>
+            <property expression="get-property('srvStartDateTime')"
+                      name="----srvStartDateTime----"/>
+            <property expression="get-property('srvEndDateTime')"
+                      name="----srvEndDateTime----"/>
+            <property expression="get-property('quotaName')" name="----quotaName----"/>
+            <property expression="get-property('rechargedValue')"
+                      name="----rechargedValue----"/>
+            <property expression="get-property('userState')" name="----userState----"/>
+            <property expression="get-property('usrHomeSrvZone')"
+                      name="----usrHomeSrvZone----"/>
+            <property expression="get-property('usrPaidType')" name="----usrPaidType----"/>
+            <property expression="get-property('usrCategory')" name="----usrCategory----"/>
+            <property expression="get-property('usrStation')" name="----usrStation----"/>
+            <property expression="get-property('usrEmailAddress')"
+                      name="----usrEmailAddress----"/>
+            <property expression="get-property('usrContactMethod')"
+                      name="----usrContactMethod----"/>
+            <property expression="get-property('usrBillCycleDate')"
+                      name="----usrBillCycleDate----"/>
+            <property expression="get-property('usrSubNetType')" name="----usrSubNetType----"/>
+            <property expression="get-property('usrBirthday')" name="----usrBirthday----"/>
+            <property expression="get-property('srvRoamingType')"
+                      name="----srvRoamingType----"/>
+            <property expression="get-property('qtaClass')" name="----qtaClass----"/>
          </log>
          <dblookup>
             <connection>
@@ -236,30 +243,30 @@
             </connection>
             <statement>
                <sql>select location_prop,resultCode from login_session ORDER BY login_id desc limit 1</sql>
-               <result name="resultCodeLogin" column="resultCode"/>
-               <result name="LOCATION_PROP" column="location_prop"/>
+               <result column="resultCode" name="resultCodeLogin"/>
+               <result column="location_prop" name="LOCATION_PROP"/>
             </statement>
          </dblookup>
          <property name="resultCodeDes"
-                   value="Invalid sessionId"
                    scope="default"
-                   type="STRING"/>
+                   type="STRING"
+                   value="Invalid sessionId"/>
          <log level="custom">
-            <property name="----RECEIVED STATUS CODE----"
-                      expression="get-property('RESPONSE_STATUS_CODE')"/>
-            <property name="----RECEIVED LOCALTION PROPERTY----"
-                      expression="get-property('LOCATION_PROP')"/>
-            <property name="----LOGIN API RESPONSE----"
-                      expression="get-property('resultCodeLogin')"/>
+            <property expression="get-property('RESPONSE_STATUS_CODE')"
+                      name="----RECEIVED STATUS CODE----"/>
+            <property expression="get-property('LOCATION_PROP')"
+                      name="----RECEIVED LOCALTION PROPERTY----"/>
+            <property expression="get-property('resultCodeLogin')"
+                      name="----LOGIN API RESPONSE----"/>
          </log>
          <filter xpath="get-property('resultCodeLogin')='0'">
             <then>
-               <property name="resultCode" expression="get-property('resultCodeLogin')"/>
-               <property name="interfaceName" value="Login" type="STRING"/>
+               <property expression="get-property('resultCodeLogin')" name="resultCode"/>
+               <property name="interfaceName" type="STRING" value="Login"/>
                <clone continueParent="true">
                   <target sequence="pcrf_downstream"/>
                </clone>
-               <payloadFactory media-type="xml" description="login_payload">
+               <payloadFactory description="login_payload" media-type="xml">
                   <format>
                      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                         <soapenv:Header/>
@@ -285,13 +292,13 @@
                   <property name="----CallinggetSubscriberAllInf----" value="Request"/>
                </log>
                <header name="Action" scope="transport" value="Notification"/>
-               <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-               <property name="uri.var.httpendpointurl"
-                         expression="get-property('LOCATION_PROP')"/>
+               <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+               <property expression="get-property('LOCATION_PROP')"
+                         name="uri.var.httpendpointurl"/>
                <header xmlns:m0="http://services.samples"
                        xmlns:m1="http://services.samples/xsd"
-                       name="To"
-                       expression="get-property('LOCATION_PROP')"/>
+                       expression="get-property('LOCATION_PROP')"
+                       name="To"/>
                <call>
                   <endpoint name="PCRFEP">
                      <default format="soap11">
@@ -314,31 +321,31 @@
                <log level="full">
                   <property name="----getSubscriberAllInfResponse----" value="Response"/>
                </log>
-               <property name="resultCodeSubInfo"
-                         expression="//result/resultCode"
+               <property expression="//result/resultCode"
+                         name="resultCodeSubInfo"
                          scope="default"
                          type="STRING"/>
-               <property name="resultCodeDes"
-                         expression="//result/paras/value"
+               <property expression="//result/paras/value"
+                         name="resultCodeDes"
                          scope="default"
                          type="STRING"/>
                <filter xpath="get-property('resultCodeSubInfo')='0'">
                   <then>
-                     <property name="resultCode" expression="get-property('resultCodeSubInfo')"/>
-                     <property name="interfaceName" value="getSubscriberAllInf" type="STRING"/>
+                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <clone continueParent="true">
                         <target sequence="pcrf_downstream"/>
                      </clone>
                      <property xmlns:ns="http://org.apache.synapse/xsd"
-                               name="srvNameApiRes"
-                               expression="//result/subscribedService/attribute[key='SRVNAME']/value"/>
+                               expression="//result/subscribedService/attribute[key='SRVNAME']/value"
+                               name="srvNameApiRes"/>
                      <filter xpath="//result/subscribedService/attribute[key='SRVNAME']/value=get-property('srvName')">
                         <then>
                            <log level="custom">
-                              <property name="----Service Name Matched----"
-                                        expression="get-property('srvNameApiRes')"/>
+                              <property expression="get-property('srvNameApiRes')"
+                                        name="----Service Name Matched----"/>
                            </log>
-                           <payloadFactory media-type="xml" description="login_payload">
+                           <payloadFactory description="login_payload" media-type="xml">
                               <format>
                                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                     <soapenv:Header/>
@@ -391,13 +398,13 @@
                               <property name="----updateSubSubscriptionRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
-                           <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                           <property name="uri.var.httpendpointurl"
-                                     expression="get-property('LOCATION_PROP')"/>
+                           <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                           <property expression="get-property('LOCATION_PROP')"
+                                     name="uri.var.httpendpointurl"/>
                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   name="To"
-                                   expression="get-property('LOCATION_PROP')"/>
+                                   expression="get-property('LOCATION_PROP')"
+                                   name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
                                  <default format="soap11">
@@ -420,22 +427,22 @@
                            <log level="full">
                               <property name="----updateSubSubscriptionResposne----" value="Response"/>
                            </log>
-                           <property name="resultCodeUpdateSub"
-                                     expression="//result/resultCode"
+                           <property expression="//result/resultCode"
+                                     name="resultCodeUpdateSub"
                                      scope="default"
                                      type="STRING"/>
-                           <property name="resultCodeDes"
-                                     expression="//result/paras/value"
+                           <property expression="//result/paras/value"
+                                     name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
                            <filter xpath="get-property('resultCodeUpdateSub')='0'">
                               <then>
-                                 <property name="resultCode" expression="get-property('resultCodeUpdateSub')"/>
-                                 <property name="interfaceName" value="updateSubSubscription" type="STRING"/>
+                                 <property expression="get-property('resultCodeUpdateSub')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="updateSubSubscription"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
                                  </clone>
-                                 <payloadFactory media-type="xml" description="rechargeSubscriberQuota_payload">
+                                 <payloadFactory description="rechargeSubscriberQuota_payload" media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                           <soapenv:Header/>
@@ -478,13 +485,13 @@
                                     <property name="----CallinggetSubscriberAllInf----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="uri.var.httpendpointurl"
-                                           expression="get-property('LOCATION_PROP')"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property expression="get-property('LOCATION_PROP')"
+                                           name="uri.var.httpendpointurl"/>
                                  <header xmlns:m0="http://services.samples"
                                          xmlns:m1="http://services.samples/xsd"
-                                         name="To"
-                                         expression="get-property('LOCATION_PROP')"/>
+                                         expression="get-property('LOCATION_PROP')"
+                                         name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -507,19 +514,19 @@
                                  <log level="full">
                                     <property name="----rechargeSubscriberQuotaResponse----" value="Response"/>
                                  </log>
-                                 <property name="resultCodeRecSubQuota"
-                                           expression="//result/resultCode"
+                                 <property expression="//result/resultCode"
+                                           name="resultCodeRecSubQuota"
                                            scope="default"
                                            type="STRING"/>
-                                 <property name="resultCodeDes"
-                                           expression="//result/paras/value"
+                                 <property expression="//result/paras/value"
+                                           name="resultCodeDes"
                                            scope="default"
                                            type="STRING"/>
                                  <filter xpath="get-property('resultCodeRecSubQuota')='0'">
                                     <then>
-                                       <property name="resStatus" value="OK" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeRechargeQuota')"/>
-                                       <property name="interfaceName" value="rechargeSubscriberQuota" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="OK"/>
+                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -544,13 +551,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -562,9 +569,9 @@
                                  </filter>
                                  <filter xpath="get-property('resultCodeRecSubQuota')!='0'">
                                     <then>
-                                       <property name="resStatus" value="KO" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeRechargeQuota')"/>
-                                       <property name="interfaceName" value="rechargeSubscriberQuota" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="KO"/>
+                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -589,13 +596,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -607,9 +614,9 @@
                                  </filter>
                               </then>
                               <else>
-                                 <property name="resStatus" value="KO" type="STRING"/>
-                                 <property name="resultCode" expression="get-property('resultCodeUpdateSub')"/>
-                                 <property name="interfaceName" value="updateSubSubscription" type="STRING"/>
+                                 <property name="resStatus" type="STRING" value="KO"/>
+                                 <property expression="get-property('resultCodeUpdateSub')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="updateSubSubscription"/>
                                  <payloadFactory media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -634,13 +641,13 @@
                                     </args>
                                  </payloadFactory>
                                  <enrich>
-                                    <source type="body" clone="true"/>
-                                    <target type="property" property="ResponsePayload"/>
+                                    <source clone="true" type="body"/>
+                                    <target property="ResponsePayload" type="property"/>
                                  </enrich>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                 <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                 <header name="To" scope="default" action="remove"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                 <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                 <header action="remove" name="To" scope="default"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_req_res_logs"/>
                                  </clone>
@@ -653,10 +660,10 @@
                         </then>
                         <else>
                            <log level="custom">
-                              <property name="----Service Name not Matched----"
-                                        expression="get-property('srvNameApiRes')"/>
+                              <property expression="get-property('srvNameApiRes')"
+                                        name="----Service Name not Matched----"/>
                            </log>
-                           <payloadFactory media-type="xml" description="subscribeService_payload">
+                           <payloadFactory description="subscribeService_payload" media-type="xml">
                               <format>
                                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                     <soapenv:Header/>
@@ -709,13 +716,13 @@
                               <property name="----subscribeServiceRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
-                           <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                           <property name="uri.var.httpendpointurl"
-                                     expression="get-property('LOCATION_PROP')"/>
+                           <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                           <property expression="get-property('LOCATION_PROP')"
+                                     name="uri.var.httpendpointurl"/>
                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   name="To"
-                                   expression="get-property('LOCATION_PROP')"/>
+                                   expression="get-property('LOCATION_PROP')"
+                                   name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
                                  <default format="soap11">
@@ -738,22 +745,22 @@
                            <log level="full">
                               <property name="----subscribeServiceResponse----" value="Response"/>
                            </log>
-                           <property name="resultCodeSubSer"
-                                     expression="//result/resultCode"
+                           <property expression="//result/resultCode"
+                                     name="resultCodeSubSer"
                                      scope="default"
                                      type="STRING"/>
-                           <property name="resultCodeDes"
-                                     expression="//result/paras/value"
+                           <property expression="//result/paras/value"
+                                     name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
                            <filter xpath="get-property('resultCodeSubSer')='0'">
                               <then>
-                                 <property name="resultCode" expression="get-property('resultCodeSubSer')"/>
-                                 <property name="interfaceName" value="subscribeService" type="STRING"/>
+                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
                                  </clone>
-                                 <payloadFactory media-type="xml" description="login_payload">
+                                 <payloadFactory description="login_payload" media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                           <soapenv:Header/>
@@ -796,13 +803,13 @@
                                     <property name="----rechargeSubscriberQuota----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="uri.var.httpendpointurl"
-                                           expression="get-property('LOCATION_PROP')"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property expression="get-property('LOCATION_PROP')"
+                                           name="uri.var.httpendpointurl"/>
                                  <header xmlns:m0="http://services.samples"
                                          xmlns:m1="http://services.samples/xsd"
-                                         name="To"
-                                         expression="get-property('LOCATION_PROP')"/>
+                                         expression="get-property('LOCATION_PROP')"
+                                         name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -825,19 +832,19 @@
                                  <log level="full">
                                     <property name="----rechargeSubscriberQuota----" value="Response"/>
                                  </log>
-                                 <property name="resultCodeRechargeQuota"
-                                           expression="//result/resultCode"
+                                 <property expression="//result/resultCode"
+                                           name="resultCodeRechargeQuota"
                                            scope="default"
                                            type="STRING"/>
-                                 <property name="resultCodeDes"
-                                           expression="//result/paras/value"
+                                 <property expression="//result/paras/value"
+                                           name="resultCodeDes"
                                            scope="default"
                                            type="STRING"/>
                                  <filter xpath="get-property('resultCodeRechargeQuota')='0'">
                                     <then>
-                                       <property name="resStatus" value="OK" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeRechargeQuota')"/>
-                                       <property name="interfaceName" value="rechargeSubscriberQuota" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="OK"/>
+                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -862,13 +869,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -880,9 +887,9 @@
                                  </filter>
                                  <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
                                     <then>
-                                       <property name="resStatus" value="OK" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeRechargeQuota')"/>
-                                       <property name="interfaceName" value="rechargeSubscriberQuota" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="OK"/>
+                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -907,13 +914,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -925,9 +932,9 @@
                                  </filter>
                               </then>
                               <else>
-                                 <property name="resStatus" value="KO" type="STRING"/>
-                                 <property name="resultCode" expression="get-property('resultCodeSubSer')"/>
-                                 <property name="interfaceName" value="subscribeService" type="STRING"/>
+                                 <property name="resStatus" type="STRING" value="KO"/>
+                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <payloadFactory media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -952,13 +959,13 @@
                                     </args>
                                  </payloadFactory>
                                  <enrich>
-                                    <source type="body" clone="true"/>
-                                    <target type="property" property="ResponsePayload"/>
+                                    <source clone="true" type="body"/>
+                                    <target property="ResponsePayload" type="property"/>
                                  </enrich>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                 <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                 <header name="To" scope="default" action="remove"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                 <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                 <header action="remove" name="To" scope="default"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_req_res_logs"/>
                                  </clone>
@@ -974,12 +981,12 @@
                </filter>
                <filter xpath="get-property('resultCodeSubInfo')='12302'">
                   <then>
-                     <property name="resultCode" expression="get-property('resultCodeSubInfo')"/>
-                     <property name="interfaceName" value="getSubscriberAllInf" type="STRING"/>
+                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <clone continueParent="true">
                         <target sequence="pcrf_downstream"/>
                      </clone>
-                     <payloadFactory media-type="xml" description="addsubscriber_payload">
+                     <payloadFactory description="addsubscriber_payload" media-type="xml">
                         <format>
                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                               <soapenv:Header/>
@@ -1043,7 +1050,7 @@
                         </format>
                         <args>
                            <arg evaluator="xml" expression="$ctx:msisdn"/>
-                           <arg evaluator="xml" expression="$ctx:usrState"/>
+                           <arg evaluator="xml" expression="$ctx:userState"/>
                            <arg evaluator="xml" expression="$ctx:usrHomeSrvZone"/>
                            <arg evaluator="xml" expression="$ctx:usrPaidType"/>
                            <arg evaluator="xml" expression="$ctx:usrCategory"/>
@@ -1059,13 +1066,13 @@
                         <property name="----CallingaddSubscriber----" value="Request"/>
                      </log>
                      <header name="Action" scope="transport" value="Notification"/>
-                     <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                     <property name="uri.var.httpendpointurl"
-                               expression="get-property('LOCATION_PROP')"/>
+                     <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                     <property expression="get-property('LOCATION_PROP')"
+                               name="uri.var.httpendpointurl"/>
                      <header xmlns:m0="http://services.samples"
                              xmlns:m1="http://services.samples/xsd"
-                             name="To"
-                             expression="get-property('LOCATION_PROP')"/>
+                             expression="get-property('LOCATION_PROP')"
+                             name="To"/>
                      <call>
                         <endpoint name="PCRFEP">
                            <default format="soap11">
@@ -1088,22 +1095,22 @@
                      <log level="full">
                         <property name="----addSubscriberResponse----" value="Response"/>
                      </log>
-                     <property name="resultCodeAddSub"
-                               expression="//result/resultCode"
+                     <property expression="//result/resultCode"
+                               name="resultCodeAddSub"
                                scope="default"
                                type="STRING"/>
-                     <property name="resultCodeDes"
-                               expression="//result/paras/value"
+                     <property expression="//result/paras/value"
+                               name="resultCodeDes"
                                scope="default"
                                type="STRING"/>
                      <filter xpath="get-property('resultCodeAddSub')='0'">
                         <then>
-                           <property name="resultCode" expression="get-property('resultCodeAddSub')"/>
-                           <property name="interfaceName" value="addSubscriber" type="STRING"/>
+                           <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                           <property name="interfaceName" type="STRING" value="addSubscriber"/>
                            <clone continueParent="true">
                               <target sequence="pcrf_downstream"/>
                            </clone>
-                           <payloadFactory media-type="xml" description="subscribeService_payload">
+                           <payloadFactory description="subscribeService_payload" media-type="xml">
                               <format>
                                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                     <soapenv:Header/>
@@ -1156,13 +1163,13 @@
                               <property name="----subscribeServiceRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
-                           <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                           <property name="uri.var.httpendpointurl"
-                                     expression="get-property('LOCATION_PROP')"/>
+                           <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                           <property expression="get-property('LOCATION_PROP')"
+                                     name="uri.var.httpendpointurl"/>
                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   name="To"
-                                   expression="get-property('LOCATION_PROP')"/>
+                                   expression="get-property('LOCATION_PROP')"
+                                   name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
                                  <default format="soap11">
@@ -1185,22 +1192,22 @@
                            <log level="full">
                               <property name="----subscribeServiceResponse----" value="Response"/>
                            </log>
-                           <property name="resultCodeSubSer"
-                                     expression="//result/resultCode"
+                           <property expression="//result/resultCode"
+                                     name="resultCodeSubSer"
                                      scope="default"
                                      type="STRING"/>
-                           <property name="resultCodeDes"
-                                     expression="//result/paras/value"
+                           <property expression="//result/paras/value"
+                                     name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
                            <filter xpath="get-property('resultCodeSubSer')='0'">
                               <then>
-                                 <property name="resultCode" expression="get-property('resultCodeSubSer')"/>
-                                 <property name="interfaceName" value="subscribeService" type="STRING"/>
+                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
                                  </clone>
-                                 <payloadFactory media-type="xml" description="login_payload">
+                                 <payloadFactory description="login_payload" media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                           <soapenv:Header/>
@@ -1243,13 +1250,13 @@
                                     <property name="----REQUEST rechargeSubscriberQuota----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="uri.var.httpendpointurl"
-                                           expression="get-property('LOCATION_PROP')"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property expression="get-property('LOCATION_PROP')"
+                                           name="uri.var.httpendpointurl"/>
                                  <header xmlns:m0="http://services.samples"
                                          xmlns:m1="http://services.samples/xsd"
-                                         name="To"
-                                         expression="get-property('LOCATION_PROP')"/>
+                                         expression="get-property('LOCATION_PROP')"
+                                         name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -1272,19 +1279,19 @@
                                  <log level="full">
                                     <property name="----RESPONSE rechargeSubscriberQuota----" value="Response"/>
                                  </log>
-                                 <property name="resultCodeRechargeQuota"
-                                           expression="//result/resultCode"
+                                 <property expression="//result/resultCode"
+                                           name="resultCodeRechargeQuota"
                                            scope="default"
                                            type="STRING"/>
-                                 <property name="resultCodeDes"
-                                           expression="//result/paras/value"
+                                 <property expression="//result/paras/value"
+                                           name="resultCodeDes"
                                            scope="default"
                                            type="STRING"/>
                                  <filter xpath="get-property('resultCodeRechargeQuota')='0'">
                                     <then>
-                                       <property name="resStatus" value="OK" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeRechargeQuota')"/>
-                                       <property name="interfaceName" value="rechargeSubscriberQuota" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="OK"/>
+                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1309,13 +1316,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -1327,9 +1334,9 @@
                                  </filter>
                                  <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
                                     <then>
-                                       <property name="resStatus" value="KO" type="STRING"/>
-                                       <property name="resultCode" expression="get-property('resultCodeAddSub')"/>
-                                       <property name="interfaceName" value="addSubscriber" type="STRING"/>
+                                       <property name="resStatus" type="STRING" value="KO"/>
+                                       <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                                       <property name="interfaceName" type="STRING" value="addSubscriber"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1354,13 +1361,13 @@
                                           </args>
                                        </payloadFactory>
                                        <enrich>
-                                          <source type="body" clone="true"/>
-                                          <target type="property" property="ResponsePayload"/>
+                                          <source clone="true" type="body"/>
+                                          <target property="ResponsePayload" type="property"/>
                                        </enrich>
-                                       <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                       <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                       <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                       <header name="To" scope="default" action="remove"/>
+                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                       <header action="remove" name="To" scope="default"/>
                                        <clone continueParent="true">
                                           <target sequence="pcrf_req_res_logs"/>
                                        </clone>
@@ -1374,9 +1381,9 @@
                            </filter>
                            <filter xpath="get-property('resultCodeSubSer')!='0'">
                               <then>
-                                 <property name="resStatus" value="KO" type="STRING"/>
-                                 <property name="resultCode" expression="get-property('resultCodeSubSer')"/>
-                                 <property name="interfaceName" value="subscribeService" type="STRING"/>
+                                 <property name="resStatus" type="STRING" value="KO"/>
+                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <payloadFactory media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1401,13 +1408,13 @@
                                     </args>
                                  </payloadFactory>
                                  <enrich>
-                                    <source type="body" clone="true"/>
-                                    <target type="property" property="ResponsePayload"/>
+                                    <source clone="true" type="body"/>
+                                    <target property="ResponsePayload" type="property"/>
                                  </enrich>
-                                 <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                                 <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                                 <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                                 <header name="To" scope="default" action="remove"/>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                 <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                 <header action="remove" name="To" scope="default"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_req_res_logs"/>
                                  </clone>
@@ -1421,9 +1428,9 @@
                      </filter>
                      <filter xpath="get-property('resultCodeAddSub')!='0'">
                         <then>
-                           <property name="resStatus" value="KO" type="STRING"/>
-                           <property name="resultCode" expression="get-property('resultCodeAddSub')"/>
-                           <property name="interfaceName" value="addSubscriber" type="STRING"/>
+                           <property name="resStatus" type="STRING" value="KO"/>
+                           <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                           <property name="interfaceName" type="STRING" value="addSubscriber"/>
                            <payloadFactory media-type="xml">
                               <format>
                                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1448,13 +1455,13 @@
                               </args>
                            </payloadFactory>
                            <enrich>
-                              <source type="body" clone="true"/>
-                              <target type="property" property="ResponsePayload"/>
+                              <source clone="true" type="body"/>
+                              <target property="ResponsePayload" type="property"/>
                            </enrich>
-                           <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                           <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                           <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                           <header name="To" scope="default" action="remove"/>
+                           <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                           <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                           <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                           <header action="remove" name="To" scope="default"/>
                            <clone continueParent="true">
                               <target sequence="pcrf_req_res_logs"/>
                            </clone>
@@ -1468,9 +1475,9 @@
                </filter>
                <filter xpath="get-property('resultCodeSubInfo')!='0' and get-property('resultCodeSubInfo')!='12302'">
                   <then>
-                     <property name="resStatus" value="KO" type="STRING"/>
-                     <property name="resultCode" expression="get-property('resultCodeSubInfo')"/>
-                     <property name="interfaceName" value="getSubscriberAllInf" type="STRING"/>
+                     <property name="resStatus" type="STRING" value="KO"/>
+                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <payloadFactory media-type="xml">
                         <format>
                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1495,13 +1502,13 @@
                         </args>
                      </payloadFactory>
                      <enrich>
-                        <source type="body" clone="true"/>
-                        <target type="property" property="ResponsePayload"/>
+                        <source clone="true" type="body"/>
+                        <target property="ResponsePayload" type="property"/>
                      </enrich>
-                     <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-                     <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-                     <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-                     <header name="To" scope="default" action="remove"/>
+                     <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                     <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                     <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                     <header action="remove" name="To" scope="default"/>
                      <clone continueParent="true">
                         <target sequence="pcrf_req_res_logs"/>
                      </clone>
@@ -1513,9 +1520,9 @@
                </filter>
             </then>
             <else>
-               <property name="resStatus" value="KO" type="STRING"/>
-               <property name="resultCode" expression="get-property('resultCodeLogin')"/>
-               <property name="interfaceName" value="LOGIN" type="STRING"/>
+               <property name="resStatus" type="STRING" value="KO"/>
+               <property expression="get-property('resultCodeLogin')" name="resultCode"/>
+               <property name="interfaceName" type="STRING" value="LOGIN"/>
                <payloadFactory media-type="xml">
                   <format>
                      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1540,13 +1547,13 @@
                   </args>
                </payloadFactory>
                <enrich>
-                  <source type="body" clone="true"/>
-                  <target type="property" property="ResponsePayload"/>
+                  <source clone="true" type="body"/>
+                  <target property="ResponsePayload" type="property"/>
                </enrich>
-               <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-               <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-               <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-               <header name="To" scope="default" action="remove"/>
+               <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+               <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+               <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+               <header action="remove" name="To" scope="default"/>
                <clone continueParent="true">
                   <target sequence="pcrf_req_res_logs"/>
                </clone>
@@ -1561,15 +1568,15 @@
          <log level="custom">
             <property name="text"
                       value="**** An unexpected error occured while calling the PCRF Service"/>
-            <property name="message" expression="get-property('ERROR_MESSAGE')"/>
-            <property name="message2" expression="get-property('ERROR_CODE')"/>
-            <property name="message3" expression="get-property('ERROR_DETAIL')"/>
-            <property name="message4" expression="get-property('ERROR_EXCEPTION')"/>
+            <property expression="get-property('ERROR_MESSAGE')" name="message"/>
+            <property expression="get-property('ERROR_CODE')" name="message2"/>
+            <property expression="get-property('ERROR_DETAIL')" name="message3"/>
+            <property expression="get-property('ERROR_EXCEPTION')" name="message4"/>
          </log>
-         <property name="resStatus" value="KO" type="STRING"/>
-         <property name="resultCode" value="5001" type="STRING"/>
-         <property name="interfaceName" value="FAULT" type="STRING"/>
-         <property name="resultCodeDes" value="Internal Error" type="STRING"/>
+         <property name="resStatus" type="STRING" value="KO"/>
+         <property name="resultCode" type="STRING" value="5001"/>
+         <property name="interfaceName" type="STRING" value="FAULT"/>
+         <property name="resultCodeDes" type="STRING" value="Internal Error"/>
          <payloadFactory media-type="xml">
             <format>
                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1594,13 +1601,13 @@
             </args>
          </payloadFactory>
          <enrich>
-            <source type="body" clone="true"/>
-            <target type="property" property="ResponsePayload"/>
+            <source clone="true" type="body"/>
+            <target property="ResponsePayload" type="property"/>
          </enrich>
-         <property name="messageType" value="text/xml" scope="axis2" type="STRING"/>
-         <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-         <property name="RESPONSE" value="true" scope="default" type="STRING"/>
-         <header name="To" scope="default" action="remove"/>
+         <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+         <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+         <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+         <header action="remove" name="To" scope="default"/>
          <clone continueParent="true">
             <target sequence="pcrf_req_res_logs"/>
          </clone>
@@ -1611,4 +1618,6 @@
       </faultSequence>
    </target>
    <publishWSDL key="conf:/repository/esb/PCRFClientWSDL.wsdl"/>
+   <description/>
 </proxy>
+                                
