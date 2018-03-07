@@ -2,19 +2,16 @@
 <sequence xmlns="http://ws.apache.org/ns/synapse" name="pcrf_req_res_logs">
    <log level="full"/>
    <log level="custom">
-      <property name="logging" value="pcrf_req_res_logs"/>
+      <property name="UNICA" value="pcrf_req_res_logs"/>
       <property xmlns:ns="http://org.apache.synapse/xsd"
                 name="corelationID"
                 expression="get-property('corid')"/>
+      
       <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="Request"
-                expression="get-property('requestBody')"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="Response"
+                name="RESPONSE BACK TO UNICA"
                 expression="get-property('ResponsePayload')"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="RequestDateTime"
-                expression="get-property('CURR_DATE')"/>
+				
+		<property name=" ************ FLOW END *************" value="UNICA" />
    </log>
    <dbreport>
       <connection>

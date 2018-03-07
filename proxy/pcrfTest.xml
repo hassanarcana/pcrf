@@ -7,6 +7,7 @@
        transports="http,https">
    <target>
       <inSequence>
+	 
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
                    expression="$body//p:input/p:msisdn"
                    name="msisdn"
@@ -127,6 +128,14 @@
                    name="CURR_DATE"/>
          <property expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyy-MM-dd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss'))"
                    name="requestDatetime"/>
+				   <log level="custom">
+				   	<property name=" ************ FLOW STARTS *************\n" value="UNICA" />
+				  <property name="----REQUEST DATETIME----" expression="$ctx:requestDatetime"/>
+            <property name="----CorrelationId----" expression="$ctx:corid"/>
+            <property name="----UNICA REQUEST----" expression="$body"/>
+            
+					  </log>
+				   
          <filter xpath="$ctx:userState ='' or string-length($ctx:userState) = 0">
             <then>
                <property name="userState" scope="default" type="STRING" value="1"/>
@@ -205,35 +214,35 @@
             </then>
          </filter>
          <log level="custom">
-            <property expression="get-property('corid')" name="----CorrelationId----"/>
-            <property expression="get-property('msisdn')" name="----msisdn----"/>
-            <property expression="get-property('srvName')" name="----ServiceName----"/>
-            <property expression="get-property('transactiontimestamp')"
+            <property expression="$ctx:corid" name="----CorrelationId----"/>
+            <property expression="$ctx:msisdn" name="----msisdn----"/>
+            <property expression="$ctx:srvName" name="----ServiceName----"/>
+            <property expression="$ctx:transactiontimestamp"
                       name="----transactiontimestamp----"/>
-            <property expression="get-property('srvStartDateTime')"
+            <property expression="$ctx:srvStartDateTime"
                       name="----srvStartDateTime----"/>
-            <property expression="get-property('srvEndDateTime')"
+            <property expression="$ctx:srvEndDateTime"
                       name="----srvEndDateTime----"/>
-            <property expression="get-property('quotaName')" name="----quotaName----"/>
-            <property expression="get-property('rechargedValue')"
+            <property expression="$ctx:quotaName" name="----quotaName----"/>
+            <property expression="$ctx:rechargedValue"
                       name="----rechargedValue----"/>
-            <property expression="get-property('userState')" name="----userState----"/>
-            <property expression="get-property('usrHomeSrvZone')"
+            <property expression="$ctx:userState" name="----userState----"/>
+            <property expression="$ctx:usrHomeSrvZone"
                       name="----usrHomeSrvZone----"/>
-            <property expression="get-property('usrPaidType')" name="----usrPaidType----"/>
-            <property expression="get-property('usrCategory')" name="----usrCategory----"/>
-            <property expression="get-property('usrStation')" name="----usrStation----"/>
-            <property expression="get-property('usrEmailAddress')"
+            <property expression="$ctx:usrPaidType" name="----usrPaidType----"/>
+            <property expression="$ctx:usrCategory" name="----usrCategory----"/>
+            <property expression="$ctx:usrStation" name="----usrStation----"/>
+            <property expression="$ctx:usrEmailAddress"
                       name="----usrEmailAddress----"/>
-            <property expression="get-property('usrContactMethod')"
+            <property expression="$ctx:usrContactMethod"
                       name="----usrContactMethod----"/>
-            <property expression="get-property('usrBillCycleDate')"
+            <property expression="$ctx:usrBillCycleDate"
                       name="----usrBillCycleDate----"/>
-            <property expression="get-property('usrSubNetType')" name="----usrSubNetType----"/>
-            <property expression="get-property('usrBirthday')" name="----usrBirthday----"/>
-            <property expression="get-property('srvRoamingType')"
+            <property expression="$ctx:usrSubNetType" name="----usrSubNetType----"/>
+            <property expression="$ctx:usrBirthday" name="----usrBirthday----"/>
+            <property expression="$ctx:srvRoamingType"
                       name="----srvRoamingType----"/>
-            <property expression="get-property('qtaClass')" name="----qtaClass----"/>
+            <property expression="$ctx:qtaClass" name="----qtaClass----"/>
          </log>
          <dblookup>
             <connection>
@@ -247,21 +256,18 @@
                <result column="location_prop" name="LOCATION_PROP"/>
             </statement>
          </dblookup>
-         <property name="resultCodeDes"
-                   scope="default"
-                   type="STRING"
-                   value="Invalid sessionId"/>
+        
          <log level="custom">
-            <property expression="get-property('RESPONSE_STATUS_CODE')"
+            <property expression="$ctx:RESPONSE_STATUS_CODE"
                       name="----RECEIVED STATUS CODE----"/>
-            <property expression="get-property('LOCATION_PROP')"
+            <property expression="$ctx:LOCATION_PROP"
                       name="----RECEIVED LOCALTION PROPERTY----"/>
-            <property expression="get-property('resultCodeLogin')"
+            <property expression="$ctx:resultCodeLogin"
                       name="----LOGIN API RESPONSE----"/>
          </log>
          <filter xpath="get-property('resultCodeLogin')='0'">
             <then>
-               <property expression="get-property('resultCodeLogin')" name="resultCode"/>
+               <property expression="$ctx:resultCodeLogin" name="resultCode"/>
                <property name="interfaceName" type="STRING" value="Login"/>
                <clone continueParent="true">
                   <target sequence="pcrf_downstream"/>
@@ -289,15 +295,16 @@
                   </args>
                </payloadFactory>
                <log level="full">
+			      <property expression="$ctx:corid" name="----CorrelationId----"/>
                   <property name="----CallinggetSubscriberAllInf----" value="Request"/>
                </log>
                <header name="Action" scope="transport" value="Notification"/>
                <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-               <property expression="get-property('LOCATION_PROP')"
+               <property expression="$ctx:LOCATION_PROP"
                          name="uri.var.httpendpointurl"/>
                <header xmlns:m0="http://services.samples"
                        xmlns:m1="http://services.samples/xsd"
-                       expression="get-property('LOCATION_PROP')"
+                       expression="$ctx:LOCATION_PROP"
                        name="To"/>
                <call>
                   <endpoint name="PCRFEP">
@@ -319,6 +326,7 @@
                   </endpoint>
                </call>
                <log level="full">
+			   	  <property expression="$ctx:corid" name="----CorrelationId----"/>
                   <property name="----getSubscriberAllInfResponse----" value="Response"/>
                </log>
                <property expression="//result/resultCode"
@@ -331,7 +339,7 @@
                          type="STRING"/>
                <filter xpath="get-property('resultCodeSubInfo')='0'">
                   <then>
-                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
                      <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <clone continueParent="true">
                         <target sequence="pcrf_downstream"/>
@@ -342,7 +350,7 @@
                      <filter xpath="//result/subscribedService/attribute[key='SRVNAME']/value=get-property('srvName')">
                         <then>
                            <log level="custom">
-                              <property expression="get-property('srvNameApiRes')"
+                              <property expression="$ctx:srvNameApiRes"
                                         name="----Service Name Matched----"/>
                            </log>
                            <payloadFactory description="login_payload" media-type="xml">
@@ -395,15 +403,16 @@
                               </args>
                            </payloadFactory>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----updateSubSubscriptionRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                           <property expression="get-property('LOCATION_PROP')"
+                           <property expression="$ctx:LOCATION_PROP"
                                      name="uri.var.httpendpointurl"/>
                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   expression="get-property('LOCATION_PROP')"
+                                   expression="$ctx:LOCATION_PROP"
                                    name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
@@ -425,6 +434,7 @@
                               </endpoint>
                            </call>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----updateSubSubscriptionResposne----" value="Response"/>
                            </log>
                            <property expression="//result/resultCode"
@@ -482,16 +492,16 @@
                                     </args>
                                  </payloadFactory>
                                  <log level="full">
+								 <property expression="$ctx:corid" name="----CorrelationId----"/>
                                     <property name="----CallinggetSubscriberAllInf----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
                                  <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                 <property expression="get-property('LOCATION_PROP')"
-                                           name="uri.var.httpendpointurl"/>
-                                 <header xmlns:m0="http://services.samples"
-                                         xmlns:m1="http://services.samples/xsd"
-                                         expression="get-property('LOCATION_PROP')"
-                                         name="To"/>
+                                <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+								<header xmlns:m0="http://services.samples"
+                                   xmlns:m1="http://services.samples/xsd"
+                                   expression="$ctx:LOCATION_PROP"
+                                   name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -512,6 +522,7 @@
                                     </endpoint>
                                  </call>
                                  <log level="full">
+								 <property expression="$ctx:corid" name="----CorrelationId----"/>
                                     <property name="----rechargeSubscriberQuotaResponse----" value="Response"/>
                                  </log>
                                  <property expression="//result/resultCode"
@@ -525,7 +536,7 @@
                                  <filter xpath="get-property('resultCodeRecSubQuota')='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -544,10 +555,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeRecSubQuota')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeRecSubQuota"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -570,7 +581,7 @@
                                  <filter xpath="get-property('resultCodeRecSubQuota')!='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="KO"/>
-                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -589,10 +600,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeRecSubQuota')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeRecSubQuota"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -615,7 +626,7 @@
                               </then>
                               <else>
                                  <property name="resStatus" type="STRING" value="KO"/>
-                                 <property expression="get-property('resultCodeUpdateSub')" name="resultCode"/>
+                                 <property expression="$ctx:resultCodeUpdateSub" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="updateSubSubscription"/>
                                  <payloadFactory media-type="xml">
                                     <format>
@@ -634,10 +645,10 @@
                                        </soapenv:Envelope>
                                     </format>
                                     <args>
-                                       <arg evaluator="xml" expression="get-property('corid')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeUpdateSub')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                       <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                       <arg evaluator="xml" expression="$ctx:corid"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeUpdateSub"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                       <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                     </args>
                                  </payloadFactory>
                                  <enrich>
@@ -713,15 +724,15 @@
                               </args>
                            </payloadFactory>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                           <property expression="get-property('LOCATION_PROP')"
-                                     name="uri.var.httpendpointurl"/>
-                           <header xmlns:m0="http://services.samples"
+                           <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                         <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   expression="get-property('LOCATION_PROP')"
+                                   expression="$ctx:LOCATION_PROP"
                                    name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
@@ -743,6 +754,7 @@
                               </endpoint>
                            </call>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceResponse----" value="Response"/>
                            </log>
                            <property expression="//result/resultCode"
@@ -755,7 +767,7 @@
                                      type="STRING"/>
                            <filter xpath="get-property('resultCodeSubSer')='0'">
                               <then>
-                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
@@ -804,12 +816,11 @@
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
                                  <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                 <property expression="get-property('LOCATION_PROP')"
-                                           name="uri.var.httpendpointurl"/>
-                                 <header xmlns:m0="http://services.samples"
-                                         xmlns:m1="http://services.samples/xsd"
-                                         expression="get-property('LOCATION_PROP')"
-                                         name="To"/>
+                                 <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                                   <header xmlns:m0="http://services.samples"
+                                   xmlns:m1="http://services.samples/xsd"
+                                   expression="$ctx:LOCATION_PROP"
+                                   name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -830,6 +841,7 @@
                                     </endpoint>
                                  </call>
                                  <log level="full">
+								 <property expression="$ctx:corid" name="----CorrelationId----"/>
                                     <property name="----rechargeSubscriberQuota----" value="Response"/>
                                  </log>
                                  <property expression="//result/resultCode"
@@ -843,7 +855,7 @@
                                  <filter xpath="get-property('resultCodeRechargeQuota')='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -862,10 +874,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeLogin')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -888,7 +900,7 @@
                                  <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -907,10 +919,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeLogin')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -933,7 +945,7 @@
                               </then>
                               <else>
                                  <property name="resStatus" type="STRING" value="KO"/>
-                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <payloadFactory media-type="xml">
                                     <format>
@@ -952,10 +964,10 @@
                                        </soapenv:Envelope>
                                     </format>
                                     <args>
-                                       <arg evaluator="xml" expression="get-property('corid')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeSubSer')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                       <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                       <arg evaluator="xml" expression="$ctx:corid"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeSubSer"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                       <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                     </args>
                                  </payloadFactory>
                                  <enrich>
@@ -981,7 +993,7 @@
                </filter>
                <filter xpath="get-property('resultCodeSubInfo')='12302'">
                   <then>
-                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
                      <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <clone continueParent="true">
                         <target sequence="pcrf_downstream"/>
@@ -1063,16 +1075,16 @@
                         </args>
                      </payloadFactory>
                      <log level="full">
+					 <property expression="$ctx:corid" name="----CorrelationId----"/>
                         <property name="----CallingaddSubscriber----" value="Request"/>
                      </log>
                      <header name="Action" scope="transport" value="Notification"/>
                      <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                     <property expression="get-property('LOCATION_PROP')"
-                               name="uri.var.httpendpointurl"/>
-                     <header xmlns:m0="http://services.samples"
-                             xmlns:m1="http://services.samples/xsd"
-                             expression="get-property('LOCATION_PROP')"
-                             name="To"/>
+                    <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                    <header xmlns:m0="http://services.samples"
+                                   xmlns:m1="http://services.samples/xsd"
+                                   expression="$ctx:LOCATION_PROP"
+                                   name="To"/>
                      <call>
                         <endpoint name="PCRFEP">
                            <default format="soap11">
@@ -1093,6 +1105,7 @@
                         </endpoint>
                      </call>
                      <log level="full">
+					 <property expression="$ctx:corid" name="----CorrelationId----"/>
                         <property name="----addSubscriberResponse----" value="Response"/>
                      </log>
                      <property expression="//result/resultCode"
@@ -1105,7 +1118,7 @@
                                type="STRING"/>
                      <filter xpath="get-property('resultCodeAddSub')='0'">
                         <then>
-                           <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                           <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="addSubscriber"/>
                            <clone continueParent="true">
                               <target sequence="pcrf_downstream"/>
@@ -1160,15 +1173,15 @@
                               </args>
                            </payloadFactory>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                           <property expression="get-property('LOCATION_PROP')"
-                                     name="uri.var.httpendpointurl"/>
-                           <header xmlns:m0="http://services.samples"
+                           <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
-                                   expression="get-property('LOCATION_PROP')"
+                                   expression="$ctx:LOCATION_PROP"
                                    name="To"/>
                            <call>
                               <endpoint name="PCRFEP">
@@ -1190,6 +1203,7 @@
                               </endpoint>
                            </call>
                            <log level="full">
+						   <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceResponse----" value="Response"/>
                            </log>
                            <property expression="//result/resultCode"
@@ -1202,7 +1216,7 @@
                                      type="STRING"/>
                            <filter xpath="get-property('resultCodeSubSer')='0'">
                               <then>
-                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
@@ -1247,16 +1261,16 @@
                                     </args>
                                  </payloadFactory>
                                  <log level="full">
+								 <property expression="$ctx:corid" name="----CorrelationId----"/>
                                     <property name="----REQUEST rechargeSubscriberQuota----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
                                  <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                 <property expression="get-property('LOCATION_PROP')"
-                                           name="uri.var.httpendpointurl"/>
-                                 <header xmlns:m0="http://services.samples"
-                                         xmlns:m1="http://services.samples/xsd"
-                                         expression="get-property('LOCATION_PROP')"
-                                         name="To"/>
+                                 <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                               <header xmlns:m0="http://services.samples"
+                                   xmlns:m1="http://services.samples/xsd"
+                                   expression="$ctx:LOCATION_PROP"
+                                   name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -1277,6 +1291,7 @@
                                     </endpoint>
                                  </call>
                                  <log level="full">
+								 <property expression="$ctx:corid" name="----CorrelationId----"/>
                                     <property name="----RESPONSE rechargeSubscriberQuota----" value="Response"/>
                                  </log>
                                  <property expression="//result/resultCode"
@@ -1290,7 +1305,7 @@
                                  <filter xpath="get-property('resultCodeRechargeQuota')='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="get-property('resultCodeRechargeQuota')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -1309,10 +1324,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeRechargeQuota')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeRechargeQuota"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -1335,7 +1350,7 @@
                                  <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="KO"/>
-                                       <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                                       <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
                                        <property name="interfaceName" type="STRING" value="addSubscriber"/>
                                        <payloadFactory media-type="xml">
                                           <format>
@@ -1354,10 +1369,10 @@
                                              </soapenv:Envelope>
                                           </format>
                                           <args>
-                                             <arg evaluator="xml" expression="get-property('corid')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeRechargeQuota')"/>
-                                             <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                             <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                             <arg evaluator="xml" expression="$ctx:corid"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeRechargeQuota"/>
+                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                           </args>
                                        </payloadFactory>
                                        <enrich>
@@ -1382,7 +1397,7 @@
                            <filter xpath="get-property('resultCodeSubSer')!='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="KO"/>
-                                 <property expression="get-property('resultCodeSubSer')" name="resultCode"/>
+                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
                                  <payloadFactory media-type="xml">
                                     <format>
@@ -1401,10 +1416,10 @@
                                        </soapenv:Envelope>
                                     </format>
                                     <args>
-                                       <arg evaluator="xml" expression="get-property('corid')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeSubSer')"/>
-                                       <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                       <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                       <arg evaluator="xml" expression="$ctx:corid"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeSubSer"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                       <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                     </args>
                                  </payloadFactory>
                                  <enrich>
@@ -1429,7 +1444,7 @@
                      <filter xpath="get-property('resultCodeAddSub')!='0'">
                         <then>
                            <property name="resStatus" type="STRING" value="KO"/>
-                           <property expression="get-property('resultCodeAddSub')" name="resultCode"/>
+                           <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="addSubscriber"/>
                            <payloadFactory media-type="xml">
                               <format>
@@ -1448,10 +1463,10 @@
                                  </soapenv:Envelope>
                               </format>
                               <args>
-                                 <arg evaluator="xml" expression="get-property('corid')"/>
-                                 <arg evaluator="xml" expression="get-property('resultCodeAddSub')"/>
-                                 <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                                 <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                                 <arg evaluator="xml" expression="$ctx:corid"/>
+                                 <arg evaluator="xml" expression="$ctx:resultCodeAddSub"/>
+                                 <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                 <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                               </args>
                            </payloadFactory>
                            <enrich>
@@ -1476,7 +1491,7 @@
                <filter xpath="get-property('resultCodeSubInfo')!='0' and get-property('resultCodeSubInfo')!='12302'">
                   <then>
                      <property name="resStatus" type="STRING" value="KO"/>
-                     <property expression="get-property('resultCodeSubInfo')" name="resultCode"/>
+                     <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
                      <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
                      <payloadFactory media-type="xml">
                         <format>
@@ -1495,10 +1510,10 @@
                            </soapenv:Envelope>
                         </format>
                         <args>
-                           <arg evaluator="xml" expression="get-property('corid')"/>
-                           <arg evaluator="xml" expression="get-property('resultCodeSubInfo')"/>
-                           <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-                           <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+                           <arg evaluator="xml" expression="$ctx:corid"/>
+                           <arg evaluator="xml" expression="$ctx:resultCodeSubInfo"/>
+                           <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                           <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                         </args>
                      </payloadFactory>
                      <enrich>
@@ -1563,15 +1578,16 @@
                <respond/>
             </else>
          </filter>
+		
       </inSequence>
       <faultSequence>
          <log level="custom">
             <property name="text"
                       value="**** An unexpected error occured while calling the PCRF Service"/>
-            <property expression="get-property('ERROR_MESSAGE')" name="message"/>
-            <property expression="get-property('ERROR_CODE')" name="message2"/>
-            <property expression="get-property('ERROR_DETAIL')" name="message3"/>
-            <property expression="get-property('ERROR_EXCEPTION')" name="message4"/>
+            <property expression="$ctx:ERROR_MESSAGE" name="message"/>
+            <property expression="$ctx:ERROR_CODE" name="message2"/>
+            <property expression="$ctx:ERROR_DETAIL" name="message3"/>
+            <property expression="$ctx:ERROR_EXCEPTION" name="message4"/>
          </log>
          <property name="resStatus" type="STRING" value="KO"/>
          <property name="resultCode" type="STRING" value="5001"/>
@@ -1594,10 +1610,10 @@
                </soapenv:Envelope>
             </format>
             <args>
-               <arg evaluator="xml" expression="get-property('corid')"/>
-               <arg evaluator="xml" expression="get-property('resultCode')"/>
-               <arg evaluator="xml" expression="get-property('resultCodeDes')"/>
-               <arg evaluator="xml" expression="get-property('CURR_DATE')"/>
+               <arg evaluator="xml" expression="$ctx:corid"/>
+               <arg evaluator="xml" expression="$ctx:resultCode"/>
+               <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+               <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
             </args>
          </payloadFactory>
          <enrich>
