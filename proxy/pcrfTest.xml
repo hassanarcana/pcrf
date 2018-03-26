@@ -7,7 +7,6 @@
        transports="http,https">
    <target>
       <inSequence>
-	 
          <property xmlns:p="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd"
                    expression="$body//p:input/p:msisdn"
                    name="msisdn"
@@ -128,14 +127,12 @@
                    name="CURR_DATE"/>
          <property expression="fn:concat(synapse:get-property('SYSTEM_DATE', 'yyyy-MM-dd'),'T',synapse:get-property('SYSTEM_DATE', 'HH:mm:ss'))"
                    name="requestDatetime"/>
-				   <log level="custom">
-				   	<property name=" ************ FLOW STARTS *************\n" value="UNICA" />
-				  <property name="----REQUEST DATETIME----" expression="$ctx:requestDatetime"/>
-            <property name="----CorrelationId----" expression="$ctx:corid"/>
-            <property name="----UNICA REQUEST----" expression="$body"/>
-            
-					  </log>
-				   
+         <log level="custom">
+            <property name=" ************ FLOW STARTS *************" value="UNICA"/>
+            <property expression="$ctx:requestDatetime" name="----REQUEST DATETIME----"/>
+            <property expression="$ctx:corid" name="----CorrelationId----"/>
+            <property expression="$body" name="----UNICA REQUEST----"/>
+         </log>
          <filter xpath="$ctx:userState ='' or string-length($ctx:userState) = 0">
             <then>
                <property name="userState" scope="default" type="STRING" value="1"/>
@@ -219,29 +216,21 @@
             <property expression="$ctx:srvName" name="----ServiceName----"/>
             <property expression="$ctx:transactiontimestamp"
                       name="----transactiontimestamp----"/>
-            <property expression="$ctx:srvStartDateTime"
-                      name="----srvStartDateTime----"/>
-            <property expression="$ctx:srvEndDateTime"
-                      name="----srvEndDateTime----"/>
+            <property expression="$ctx:srvStartDateTime" name="----srvStartDateTime----"/>
+            <property expression="$ctx:srvEndDateTime" name="----srvEndDateTime----"/>
             <property expression="$ctx:quotaName" name="----quotaName----"/>
-            <property expression="$ctx:rechargedValue"
-                      name="----rechargedValue----"/>
+            <property expression="$ctx:rechargedValue" name="----rechargedValue----"/>
             <property expression="$ctx:userState" name="----userState----"/>
-            <property expression="$ctx:usrHomeSrvZone"
-                      name="----usrHomeSrvZone----"/>
+            <property expression="$ctx:usrHomeSrvZone" name="----usrHomeSrvZone----"/>
             <property expression="$ctx:usrPaidType" name="----usrPaidType----"/>
             <property expression="$ctx:usrCategory" name="----usrCategory----"/>
             <property expression="$ctx:usrStation" name="----usrStation----"/>
-            <property expression="$ctx:usrEmailAddress"
-                      name="----usrEmailAddress----"/>
-            <property expression="$ctx:usrContactMethod"
-                      name="----usrContactMethod----"/>
-            <property expression="$ctx:usrBillCycleDate"
-                      name="----usrBillCycleDate----"/>
+            <property expression="$ctx:usrEmailAddress" name="----usrEmailAddress----"/>
+            <property expression="$ctx:usrContactMethod" name="----usrContactMethod----"/>
+            <property expression="$ctx:usrBillCycleDate" name="----usrBillCycleDate----"/>
             <property expression="$ctx:usrSubNetType" name="----usrSubNetType----"/>
             <property expression="$ctx:usrBirthday" name="----usrBirthday----"/>
-            <property expression="$ctx:srvRoamingType"
-                      name="----srvRoamingType----"/>
+            <property expression="$ctx:srvRoamingType" name="----srvRoamingType----"/>
             <property expression="$ctx:qtaClass" name="----qtaClass----"/>
          </log>
          <dblookup>
@@ -256,14 +245,12 @@
                <result column="location_prop" name="LOCATION_PROP"/>
             </statement>
          </dblookup>
-        
          <log level="custom">
             <property expression="$ctx:RESPONSE_STATUS_CODE"
                       name="----RECEIVED STATUS CODE----"/>
             <property expression="$ctx:LOCATION_PROP"
                       name="----RECEIVED LOCALTION PROPERTY----"/>
-            <property expression="$ctx:resultCodeLogin"
-                      name="----LOGIN API RESPONSE----"/>
+            <property expression="$ctx:resultCodeLogin" name="----LOGIN API RESPONSE----"/>
          </log>
          <filter xpath="get-property('resultCodeLogin')='0'">
             <then>
@@ -295,13 +282,12 @@
                   </args>
                </payloadFactory>
                <log level="full">
-			      <property expression="$ctx:corid" name="----CorrelationId----"/>
+                  <property expression="$ctx:corid" name="----CorrelationId----"/>
                   <property name="----CallinggetSubscriberAllInf----" value="Request"/>
                </log>
                <header name="Action" scope="transport" value="Notification"/>
                <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-               <property expression="$ctx:LOCATION_PROP"
-                         name="uri.var.httpendpointurl"/>
+               <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
                <header xmlns:m0="http://services.samples"
                        xmlns:m1="http://services.samples/xsd"
                        expression="$ctx:LOCATION_PROP"
@@ -326,7 +312,7 @@
                   </endpoint>
                </call>
                <log level="full">
-			   	  <property expression="$ctx:corid" name="----CorrelationId----"/>
+                  <property expression="$ctx:corid" name="----CorrelationId----"/>
                   <property name="----getSubscriberAllInfResponse----" value="Response"/>
                </log>
                <property expression="//result/resultCode"
@@ -347,18 +333,110 @@
                      <property xmlns:ns="http://org.apache.synapse/xsd"
                                expression="//result/subscribedService/attribute[key='SRVNAME']/value"
                                name="srvNameApiRes"/>
-                     <filter xpath="//result/subscribedService/attribute[key='SRVNAME']/value=get-property('srvName')">
+                     <payloadFactory description="subscribeService_payload" media-type="xml">
+                        <format>
+                           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
+                              <soapenv:Header/>
+                              <soapenv:Body>
+                                 <rm:subscribeService>
+                                    <inPara>
+                                       <subscriber>
+                                          <attribute>
+                                             <key>usrIdentifier</key>
+                                             <value>$1</value>
+                                          </attribute>
+                                       </subscriber>
+                                       <subscribedService>
+                                          <attribute>
+                                             <key>srvName</key>
+                                             <value>$2</value>
+                                          </attribute>
+                                          <attribute>
+                                             <key>srvUsageState</key>
+                                             <value>$3</value>
+                                          </attribute>
+                                          <attribute>
+                                             <key>srvStartDateTime</key>
+                                             <value>$4</value>
+                                          </attribute>
+                                          <attribute>
+                                             <key>srvEndDateTime</key>
+                                             <value>$5</value>
+                                          </attribute>
+                                          <attribute>
+                                             <key>srvRoamingType</key>
+                                             <value>$6</value>
+                                          </attribute>
+                                       </subscribedService>
+                                    </inPara>
+                                 </rm:subscribeService>
+                              </soapenv:Body>
+                           </soapenv:Envelope>
+                        </format>
+                        <args>
+                           <arg evaluator="xml" expression="$ctx:msisdn"/>
+                           <arg evaluator="xml" expression="$ctx:srvName"/>
+                           <arg evaluator="xml" expression="$ctx:srvUsageState"/>
+                           <arg evaluator="xml" expression="$ctx:srvStartDateTime"/>
+                           <arg evaluator="xml" expression="$ctx:srvEndDateTime"/>
+                           <arg evaluator="xml" expression="$ctx:srvRoamingType"/>
+                        </args>
+                     </payloadFactory>
+                     <log level="full">
+                        <property expression="$ctx:corid" name="----CorrelationId----"/>
+                        <property name="----subscribeServiceRequest----" value="Request"/>
+                     </log>
+                     <header name="Action" scope="transport" value="Notification"/>
+                     <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                     <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                     <header xmlns:m0="http://services.samples"
+                             xmlns:m1="http://services.samples/xsd"
+                             expression="$ctx:LOCATION_PROP"
+                             name="To"/>
+                     <call>
+                        <endpoint name="PCRFEP">
+                           <default format="soap11">
+                              <timeout>
+                                 <duration>10000</duration>
+                                 <responseAction>fault</responseAction>
+                              </timeout>
+                              <suspendOnFailure>
+                                 <errorCodes>-1</errorCodes>
+                                 <initialDuration>0</initialDuration>
+                                 <progressionFactor>1.0</progressionFactor>
+                                 <maximumDuration>0</maximumDuration>
+                              </suspendOnFailure>
+                              <markForSuspension>
+                                 <errorCodes>-1</errorCodes>
+                              </markForSuspension>
+                           </default>
+                        </endpoint>
+                     </call>
+                     <log level="full">
+                        <property expression="$ctx:corid" name="----CorrelationId----"/>
+                        <property name="----subscribeServiceResponse----" value="Response"/>
+                     </log>
+                     <property expression="//result/resultCode"
+                               name="resultCodeSubSer"
+                               scope="default"
+                               type="STRING"/>
+                     <property expression="//result/paras/value"
+                               name="resultCodeDes"
+                               scope="default"
+                               type="STRING"/>
+                     <filter xpath="get-property('resultCodeSubSer')='0'">
                         <then>
-                           <log level="custom">
-                              <property expression="$ctx:srvNameApiRes"
-                                        name="----Service Name Matched----"/>
-                           </log>
-                           <payloadFactory description="login_payload" media-type="xml">
+                           <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
+                           <property name="interfaceName" type="STRING" value="subscribeService"/>
+                           <clone continueParent="true">
+                              <target sequence="pcrf_downstream"/>
+                           </clone>
+                           <payloadFactory description="updateSubscriberQuota_payload" media-type="xml">
                               <format>
                                  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                     <soapenv:Header/>
                                     <soapenv:Body>
-                                       <rm:updateSubSubscription>
+                                       <rm:updateSubscriberQuota>
                                           <inPara>
                                              <subscriber>
                                                 <attribute>
@@ -366,50 +444,38 @@
                                                    <value>$1</value>
                                                 </attribute>
                                              </subscriber>
-                                             <subscribedService>
+                                             <subscriberQuota>
                                                 <attribute>
-                                                   <key>srvName</key>
+                                                   <key>qtaName</key>
                                                    <value>$2</value>
                                                 </attribute>
                                                 <attribute>
-                                                   <key>srvUsageState</key>
+                                                   <key>qtaValue</key>
                                                    <value>$3</value>
                                                 </attribute>
                                                 <attribute>
-                                                   <key>srvStartDateTime</key>
+                                                   <key>srvName</key>
                                                    <value>$4</value>
                                                 </attribute>
-                                                <attribute>
-                                                   <key>srvEndDateTime</key>
-                                                   <value>$5</value>
-                                                </attribute>
-                                                <attribute>
-                                                   <key>srvRoamingType</key>
-                                                   <value>$6</value>
-                                                </attribute>
-                                             </subscribedService>
+                                             </subscriberQuota>
                                           </inPara>
-                                       </rm:updateSubSubscription>
+                                       </rm:updateSubscriberQuota>
                                     </soapenv:Body>
                                  </soapenv:Envelope>
                               </format>
                               <args>
                                  <arg evaluator="xml" expression="$ctx:msisdn"/>
+                                 <arg evaluator="xml" expression="$ctx:quotaName"/>
+                                 <arg evaluator="xml" expression="$ctx:rechargedValue"/>
                                  <arg evaluator="xml" expression="$ctx:srvName"/>
-                                 <arg evaluator="xml" expression="$ctx:srvUsageState"/>
-                                 <arg evaluator="xml" expression="$ctx:srvStartDateTime"/>
-                                 <arg evaluator="xml" expression="$ctx:srvEndDateTime"/>
-                                 <arg evaluator="xml" expression="$ctx:srvRoamingType"/>
                               </args>
                            </payloadFactory>
                            <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
-                              <property name="----updateSubSubscriptionRequest----" value="Request"/>
+                              <property name="----updateSubscriberQuota----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                           <property expression="$ctx:LOCATION_PROP"
-                                     name="uri.var.httpendpointurl"/>
+                           <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
                            <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
                                    expression="$ctx:LOCATION_PROP"
@@ -434,200 +500,22 @@
                               </endpoint>
                            </call>
                            <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
-                              <property name="----updateSubSubscriptionResposne----" value="Response"/>
+                              <property expression="$ctx:corid" name="----CorrelationId----"/>
+                              <property name="----updateSubscriberQuota----" value="Response"/>
                            </log>
                            <property expression="//result/resultCode"
-                                     name="resultCodeUpdateSub"
+                                     name="resultCodeRechargeQuota"
                                      scope="default"
                                      type="STRING"/>
                            <property expression="//result/paras/value"
                                      name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
-                           <filter xpath="get-property('resultCodeUpdateSub')='0'">
+                           <filter xpath="get-property('resultCodeRechargeQuota')='0'">
                               <then>
-                                 <property expression="get-property('resultCodeUpdateSub')" name="resultCode"/>
-                                 <property name="interfaceName" type="STRING" value="updateSubSubscription"/>
-                                 <clone continueParent="true">
-                                    <target sequence="pcrf_downstream"/>
-                                 </clone>
-                                 <payloadFactory description="rechargeSubscriberQuota_payload" media-type="xml">
-                                    <format>
-                                       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
-                                          <soapenv:Header/>
-                                          <soapenv:Body>
-                                             <rm:rechargeSubscriberQuota>
-                                                <inPara>
-                                                   <subscriber>
-                                                      <attribute>
-                                                         <key>usrIdentifier</key>
-                                                         <value>$1</value>
-                                                      </attribute>
-                                                   </subscriber>
-                                                   <rechargedQuota>
-                                                      <attribute>
-                                                         <key>qtaName</key>
-                                                         <value>$2</value>
-                                                      </attribute>
-                                                      <attribute>
-                                                         <key>rechargedValue</key>
-                                                         <value>$3</value>
-                                                      </attribute>
-                                                      <attribute>
-                                                         <key>qtaClass</key>
-                                                         <value>$4</value>
-                                                      </attribute>
-                                                   </rechargedQuota>
-                                                </inPara>
-                                             </rm:rechargeSubscriberQuota>
-                                          </soapenv:Body>
-                                       </soapenv:Envelope>
-                                    </format>
-                                    <args>
-                                       <arg evaluator="xml" expression="$ctx:msisdn"/>
-                                       <arg evaluator="xml" expression="$ctx:quotaName"/>
-                                       <arg evaluator="xml" expression="$ctx:rechargedValue"/>
-                                       <arg evaluator="xml" expression="$ctx:qtaClass"/>
-                                    </args>
-                                 </payloadFactory>
-                                 <log level="full">
-								 <property expression="$ctx:corid" name="----CorrelationId----"/>
-                                    <property name="----CallinggetSubscriberAllInf----" value="Request"/>
-                                 </log>
-                                 <header name="Action" scope="transport" value="Notification"/>
-                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-								<header xmlns:m0="http://services.samples"
-                                   xmlns:m1="http://services.samples/xsd"
-                                   expression="$ctx:LOCATION_PROP"
-                                   name="To"/>
-                                 <call>
-                                    <endpoint name="PCRFEP">
-                                       <default format="soap11">
-                                          <timeout>
-                                             <duration>10000</duration>
-                                             <responseAction>fault</responseAction>
-                                          </timeout>
-                                          <suspendOnFailure>
-                                             <errorCodes>-1</errorCodes>
-                                             <initialDuration>0</initialDuration>
-                                             <progressionFactor>1.0</progressionFactor>
-                                             <maximumDuration>0</maximumDuration>
-                                          </suspendOnFailure>
-                                          <markForSuspension>
-                                             <errorCodes>-1</errorCodes>
-                                          </markForSuspension>
-                                       </default>
-                                    </endpoint>
-                                 </call>
-                                 <log level="full">
-								 <property expression="$ctx:corid" name="----CorrelationId----"/>
-                                    <property name="----rechargeSubscriberQuotaResponse----" value="Response"/>
-                                 </log>
-                                 <property expression="//result/resultCode"
-                                           name="resultCodeRecSubQuota"
-                                           scope="default"
-                                           type="STRING"/>
-                                 <property expression="//result/paras/value"
-                                           name="resultCodeDes"
-                                           scope="default"
-                                           type="STRING"/>
-                                 <filter xpath="get-property('resultCodeRecSubQuota')='0'">
-                                    <then>
-                                       <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
-                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
-                                       <payloadFactory media-type="xml">
-                                          <format>
-                                             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                                                               xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
-                                                <soapenv:Header/>
-                                                <soapenv:Body>
-                                                   <quot:output>
-                                                      <quot:responsetimestamp>$4</quot:responsetimestamp>
-                                                      <quot:correlationid>$1</quot:correlationid>
-                                                      <quot:result>OK</quot:result>
-                                                      <quot:resultCode>$2</quot:resultCode>
-                                                      <quot:resultDescription>$3</quot:resultDescription>
-                                                   </quot:output>
-                                                </soapenv:Body>
-                                             </soapenv:Envelope>
-                                          </format>
-                                          <args>
-                                             <arg evaluator="xml" expression="$ctx:corid"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeRecSubQuota"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
-                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
-                                          </args>
-                                       </payloadFactory>
-                                       <enrich>
-                                          <source clone="true" type="body"/>
-                                          <target property="ResponsePayload" type="property"/>
-                                       </enrich>
-                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
-                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
-                                       <header action="remove" name="To" scope="default"/>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_req_res_logs"/>
-                                       </clone>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_downstream"/>
-                                       </clone>
-                                       <respond/>
-                                    </then>
-                                 </filter>
-                                 <filter xpath="get-property('resultCodeRecSubQuota')!='0'">
-                                    <then>
-                                       <property name="resStatus" type="STRING" value="KO"/>
-                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
-                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
-                                       <payloadFactory media-type="xml">
-                                          <format>
-                                             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                                                               xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
-                                                <soapenv:Header/>
-                                                <soapenv:Body>
-                                                   <quot:output>
-                                                      <quot:responsetimestamp>$4</quot:responsetimestamp>
-                                                      <quot:correlationid>$1</quot:correlationid>
-                                                      <quot:result>KO</quot:result>
-                                                      <quot:resultCode>$2</quot:resultCode>
-                                                      <quot:resultDescription>$3</quot:resultDescription>
-                                                   </quot:output>
-                                                </soapenv:Body>
-                                             </soapenv:Envelope>
-                                          </format>
-                                          <args>
-                                             <arg evaluator="xml" expression="$ctx:corid"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeRecSubQuota"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
-                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
-                                          </args>
-                                       </payloadFactory>
-                                       <enrich>
-                                          <source clone="true" type="body"/>
-                                          <target property="ResponsePayload" type="property"/>
-                                       </enrich>
-                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
-                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
-                                       <header action="remove" name="To" scope="default"/>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_req_res_logs"/>
-                                       </clone>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_downstream"/>
-                                       </clone>
-                                       <respond/>
-                                    </then>
-                                 </filter>
-                              </then>
-                              <else>
-                                 <property name="resStatus" type="STRING" value="KO"/>
-                                 <property expression="$ctx:resultCodeUpdateSub" name="resultCode"/>
-                                 <property name="interfaceName" type="STRING" value="updateSubSubscription"/>
+                                 <property name="resStatus" type="STRING" value="OK"/>
+                                 <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="updateSubscriberQuota"/>
                                  <payloadFactory media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -637,7 +525,7 @@
                                              <quot:output>
                                                 <quot:responsetimestamp>$4</quot:responsetimestamp>
                                                 <quot:correlationid>$1</quot:correlationid>
-                                                <quot:result>KO</quot:result>
+                                                <quot:result>OK</quot:result>
                                                 <quot:resultCode>$2</quot:resultCode>
                                                 <quot:resultDescription>$3</quot:resultDescription>
                                              </quot:output>
@@ -646,7 +534,7 @@
                                     </format>
                                     <args>
                                        <arg evaluator="xml" expression="$ctx:corid"/>
-                                       <arg evaluator="xml" expression="$ctx:resultCodeUpdateSub"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
                                        <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
                                        <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                                     </args>
@@ -666,327 +554,96 @@
                                     <target sequence="pcrf_downstream"/>
                                  </clone>
                                  <respond/>
-                              </else>
+                              </then>
+                           </filter>
+                           <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
+                              <then>
+                                 <property name="resStatus" type="STRING" value="OK"/>
+                                 <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
+                                 <property name="interfaceName" type="STRING" value="updateSubscriberQuota"/>
+                                 <payloadFactory media-type="xml">
+                                    <format>
+                                       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                                         xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
+                                          <soapenv:Header/>
+                                          <soapenv:Body>
+                                             <quot:output>
+                                                <quot:responsetimestamp>$4</quot:responsetimestamp>
+                                                <quot:correlationid>$1</quot:correlationid>
+                                                <quot:result>KO</quot:result>
+                                                <quot:resultCode>$2</quot:resultCode>
+                                                <quot:resultDescription>$3</quot:resultDescription>
+                                             </quot:output>
+                                          </soapenv:Body>
+                                       </soapenv:Envelope>
+                                    </format>
+                                    <args>
+                                       <arg evaluator="xml" expression="$ctx:corid"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
+                                       <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                       <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
+                                    </args>
+                                 </payloadFactory>
+                                 <enrich>
+                                    <source clone="true" type="body"/>
+                                    <target property="ResponsePayload" type="property"/>
+                                 </enrich>
+                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
+                                 <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                                 <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                                 <header action="remove" name="To" scope="default"/>
+                                 <clone continueParent="true">
+                                    <target sequence="pcrf_req_res_logs"/>
+                                 </clone>
+                                 <clone continueParent="true">
+                                    <target sequence="pcrf_downstream"/>
+                                 </clone>
+                                 <respond/>
+                              </then>
                            </filter>
                         </then>
                         <else>
-                           <log level="custom">
-                              <property expression="get-property('srvNameApiRes')"
-                                        name="----Service Name not Matched----"/>
-                           </log>
-                           <payloadFactory description="subscribeService_payload" media-type="xml">
+                           <property name="resStatus" type="STRING" value="KO"/>
+                           <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
+                           <property name="interfaceName" type="STRING" value="subscribeService"/>
+                           <payloadFactory media-type="xml">
                               <format>
-                                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
+                                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                                                   xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
                                     <soapenv:Header/>
                                     <soapenv:Body>
-                                       <rm:subscribeService>
-                                          <inPara>
-                                             <subscriber>
-                                                <attribute>
-                                                   <key>usrIdentifier</key>
-                                                   <value>$1</value>
-                                                </attribute>
-                                             </subscriber>
-                                             <subscribedService>
-                                                <attribute>
-                                                   <key>srvName</key>
-                                                   <value>$2</value>
-                                                </attribute>
-                                                <attribute>
-                                                   <key>srvUsageState</key>
-                                                   <value>$3</value>
-                                                </attribute>
-                                                <attribute>
-                                                   <key>srvStartDateTime</key>
-                                                   <value>$4</value>
-                                                </attribute>
-                                                <attribute>
-                                                   <key>srvEndDateTime</key>
-                                                   <value>$5</value>
-                                                </attribute>
-                                                <attribute>
-                                                   <key>srvRoamingType</key>
-                                                   <value>$6</value>
-                                                </attribute>
-                                             </subscribedService>
-                                          </inPara>
-                                       </rm:subscribeService>
+                                       <quot:output>
+                                          <quot:responsetimestamp>$4</quot:responsetimestamp>
+                                          <quot:correlationid>$1</quot:correlationid>
+                                          <quot:result>KO</quot:result>
+                                          <quot:resultCode>$2</quot:resultCode>
+                                          <quot:resultDescription>$3</quot:resultDescription>
+                                       </quot:output>
                                     </soapenv:Body>
                                  </soapenv:Envelope>
                               </format>
                               <args>
-                                 <arg evaluator="xml" expression="$ctx:msisdn"/>
-                                 <arg evaluator="xml" expression="$ctx:srvName"/>
-                                 <arg evaluator="xml" expression="$ctx:srvUsageState"/>
-                                 <arg evaluator="xml" expression="$ctx:srvStartDateTime"/>
-                                 <arg evaluator="xml" expression="$ctx:srvEndDateTime"/>
-                                 <arg evaluator="xml" expression="$ctx:srvRoamingType"/>
+                                 <arg evaluator="xml" expression="$ctx:corid"/>
+                                 <arg evaluator="xml" expression="$ctx:resultCodeSubSer"/>
+                                 <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
+                                 <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
                               </args>
                            </payloadFactory>
-                           <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
-                              <property name="----subscribeServiceRequest----" value="Request"/>
-                           </log>
-                           <header name="Action" scope="transport" value="Notification"/>
+                           <enrich>
+                              <source clone="true" type="body"/>
+                              <target property="ResponsePayload" type="property"/>
+                           </enrich>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                           <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-                         <header xmlns:m0="http://services.samples"
-                                   xmlns:m1="http://services.samples/xsd"
-                                   expression="$ctx:LOCATION_PROP"
-                                   name="To"/>
-                           <call>
-                              <endpoint name="PCRFEP">
-                                 <default format="soap11">
-                                    <timeout>
-                                       <duration>10000</duration>
-                                       <responseAction>fault</responseAction>
-                                    </timeout>
-                                    <suspendOnFailure>
-                                       <errorCodes>-1</errorCodes>
-                                       <initialDuration>0</initialDuration>
-                                       <progressionFactor>1.0</progressionFactor>
-                                       <maximumDuration>0</maximumDuration>
-                                    </suspendOnFailure>
-                                    <markForSuspension>
-                                       <errorCodes>-1</errorCodes>
-                                    </markForSuspension>
-                                 </default>
-                              </endpoint>
-                           </call>
-                           <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
-                              <property name="----subscribeServiceResponse----" value="Response"/>
-                           </log>
-                           <property expression="//result/resultCode"
-                                     name="resultCodeSubSer"
-                                     scope="default"
-                                     type="STRING"/>
-                           <property expression="//result/paras/value"
-                                     name="resultCodeDes"
-                                     scope="default"
-                                     type="STRING"/>
-                           <filter xpath="get-property('resultCodeSubSer')='0'">
-                              <then>
-                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
-                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
-                                 <clone continueParent="true">
-                                    <target sequence="pcrf_downstream"/>
-                                 </clone>
-                                 <payloadFactory description="login_payload" media-type="xml">
-                                    <format>
-                                       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
-                                          <soapenv:Header/>
-                                          <soapenv:Body>
-                                             <rm:rechargeSubscriberQuota>
-                                                <inPara>
-                                                   <subscriber>
-                                                      <attribute>
-                                                         <key>usrIdentifier</key>
-                                                         <value>$1</value>
-                                                      </attribute>
-                                                   </subscriber>
-                                                   <rechargedQuota>
-                                                      <attribute>
-                                                         <key>qtaName</key>
-                                                         <value>$2</value>
-                                                      </attribute>
-                                                      <attribute>
-                                                         <key>rechargedValue</key>
-                                                         <value>$3</value>
-                                                      </attribute>
-                                                      <attribute>
-                                                         <key>qtaClass</key>
-                                                         <value>$4</value>
-                                                      </attribute>
-                                                   </rechargedQuota>
-                                                </inPara>
-                                             </rm:rechargeSubscriberQuota>
-                                          </soapenv:Body>
-                                       </soapenv:Envelope>
-                                    </format>
-                                    <args>
-                                       <arg evaluator="xml" expression="$ctx:msisdn"/>
-                                       <arg evaluator="xml" expression="$ctx:quotaName"/>
-                                       <arg evaluator="xml" expression="$ctx:rechargedValue"/>
-                                       <arg evaluator="xml" expression="$ctx:qtaClass"/>
-                                    </args>
-                                 </payloadFactory>
-                                 <log level="full">
-                                    <property name="----rechargeSubscriberQuota----" value="Request"/>
-                                 </log>
-                                 <header name="Action" scope="transport" value="Notification"/>
-                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                 <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-                                   <header xmlns:m0="http://services.samples"
-                                   xmlns:m1="http://services.samples/xsd"
-                                   expression="$ctx:LOCATION_PROP"
-                                   name="To"/>
-                                 <call>
-                                    <endpoint name="PCRFEP">
-                                       <default format="soap11">
-                                          <timeout>
-                                             <duration>10000</duration>
-                                             <responseAction>fault</responseAction>
-                                          </timeout>
-                                          <suspendOnFailure>
-                                             <errorCodes>-1</errorCodes>
-                                             <initialDuration>0</initialDuration>
-                                             <progressionFactor>1.0</progressionFactor>
-                                             <maximumDuration>0</maximumDuration>
-                                          </suspendOnFailure>
-                                          <markForSuspension>
-                                             <errorCodes>-1</errorCodes>
-                                          </markForSuspension>
-                                       </default>
-                                    </endpoint>
-                                 </call>
-                                 <log level="full">
-								 <property expression="$ctx:corid" name="----CorrelationId----"/>
-                                    <property name="----rechargeSubscriberQuota----" value="Response"/>
-                                 </log>
-                                 <property expression="//result/resultCode"
-                                           name="resultCodeRechargeQuota"
-                                           scope="default"
-                                           type="STRING"/>
-                                 <property expression="//result/paras/value"
-                                           name="resultCodeDes"
-                                           scope="default"
-                                           type="STRING"/>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')='0'">
-                                    <then>
-                                       <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
-                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
-                                       <payloadFactory media-type="xml">
-                                          <format>
-                                             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                                                               xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
-                                                <soapenv:Header/>
-                                                <soapenv:Body>
-                                                   <quot:output>
-                                                      <quot:responsetimestamp>$4</quot:responsetimestamp>
-                                                      <quot:correlationid>$1</quot:correlationid>
-                                                      <quot:result>OK</quot:result>
-                                                      <quot:resultCode>$2</quot:resultCode>
-                                                      <quot:resultDescription>$3</quot:resultDescription>
-                                                   </quot:output>
-                                                </soapenv:Body>
-                                             </soapenv:Envelope>
-                                          </format>
-                                          <args>
-                                             <arg evaluator="xml" expression="$ctx:corid"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
-                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
-                                          </args>
-                                       </payloadFactory>
-                                       <enrich>
-                                          <source clone="true" type="body"/>
-                                          <target property="ResponsePayload" type="property"/>
-                                       </enrich>
-                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
-                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
-                                       <header action="remove" name="To" scope="default"/>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_req_res_logs"/>
-                                       </clone>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_downstream"/>
-                                       </clone>
-                                       <respond/>
-                                    </then>
-                                 </filter>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
-                                    <then>
-                                       <property name="resStatus" type="STRING" value="OK"/>
-                                       <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
-                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
-                                       <payloadFactory media-type="xml">
-                                          <format>
-                                             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                                                               xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
-                                                <soapenv:Header/>
-                                                <soapenv:Body>
-                                                   <quot:output>
-                                                      <quot:responsetimestamp>$4</quot:responsetimestamp>
-                                                      <quot:correlationid>$1</quot:correlationid>
-                                                      <quot:result>KO</quot:result>
-                                                      <quot:resultCode>$2</quot:resultCode>
-                                                      <quot:resultDescription>$3</quot:resultDescription>
-                                                   </quot:output>
-                                                </soapenv:Body>
-                                             </soapenv:Envelope>
-                                          </format>
-                                          <args>
-                                             <arg evaluator="xml" expression="$ctx:corid"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeLogin"/>
-                                             <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
-                                             <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
-                                          </args>
-                                       </payloadFactory>
-                                       <enrich>
-                                          <source clone="true" type="body"/>
-                                          <target property="ResponsePayload" type="property"/>
-                                       </enrich>
-                                       <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                       <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
-                                       <property name="RESPONSE" scope="default" type="STRING" value="true"/>
-                                       <header action="remove" name="To" scope="default"/>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_req_res_logs"/>
-                                       </clone>
-                                       <clone continueParent="true">
-                                          <target sequence="pcrf_downstream"/>
-                                       </clone>
-                                       <respond/>
-                                    </then>
-                                 </filter>
-                              </then>
-                              <else>
-                                 <property name="resStatus" type="STRING" value="KO"/>
-                                 <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
-                                 <property name="interfaceName" type="STRING" value="subscribeService"/>
-                                 <payloadFactory media-type="xml">
-                                    <format>
-                                       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                                                         xmlns:quot="http://com.arcanainfo.com/PCRF/Schemas/quotaRechargeSchema.xsd">
-                                          <soapenv:Header/>
-                                          <soapenv:Body>
-                                             <quot:output>
-                                                <quot:responsetimestamp>$4</quot:responsetimestamp>
-                                                <quot:correlationid>$1</quot:correlationid>
-                                                <quot:result>KO</quot:result>
-                                                <quot:resultCode>$2</quot:resultCode>
-                                                <quot:resultDescription>$3</quot:resultDescription>
-                                             </quot:output>
-                                          </soapenv:Body>
-                                       </soapenv:Envelope>
-                                    </format>
-                                    <args>
-                                       <arg evaluator="xml" expression="$ctx:corid"/>
-                                       <arg evaluator="xml" expression="$ctx:resultCodeSubSer"/>
-                                       <arg evaluator="xml" expression="$ctx:resultCodeDes"/>
-                                       <arg evaluator="xml" expression="$ctx:CURR_DATE"/>
-                                    </args>
-                                 </payloadFactory>
-                                 <enrich>
-                                    <source clone="true" type="body"/>
-                                    <target property="ResponsePayload" type="property"/>
-                                 </enrich>
-                                 <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                                 <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
-                                 <property name="RESPONSE" scope="default" type="STRING" value="true"/>
-                                 <header action="remove" name="To" scope="default"/>
-                                 <clone continueParent="true">
-                                    <target sequence="pcrf_req_res_logs"/>
-                                 </clone>
-                                 <clone continueParent="true">
-                                    <target sequence="pcrf_downstream"/>
-                                 </clone>
-                                 <respond/>
-                              </else>
-                           </filter>
+                           <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+                           <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+                           <header action="remove" name="To" scope="default"/>
+                           <clone continueParent="true">
+                              <target sequence="pcrf_req_res_logs"/>
+                           </clone>
+                           <clone continueParent="true">
+                              <target sequence="pcrf_downstream"/>
+                           </clone>
+                           <respond/>
                         </else>
                      </filter>
                   </then>
@@ -1075,16 +732,16 @@
                         </args>
                      </payloadFactory>
                      <log level="full">
-					 <property expression="$ctx:corid" name="----CorrelationId----"/>
+                        <property expression="$ctx:corid" name="----CorrelationId----"/>
                         <property name="----CallingaddSubscriber----" value="Request"/>
                      </log>
                      <header name="Action" scope="transport" value="Notification"/>
                      <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
-                    <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-                    <header xmlns:m0="http://services.samples"
-                                   xmlns:m1="http://services.samples/xsd"
-                                   expression="$ctx:LOCATION_PROP"
-                                   name="To"/>
+                     <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
+                     <header xmlns:m0="http://services.samples"
+                             xmlns:m1="http://services.samples/xsd"
+                             expression="$ctx:LOCATION_PROP"
+                             name="To"/>
                      <call>
                         <endpoint name="PCRFEP">
                            <default format="soap11">
@@ -1105,7 +762,7 @@
                         </endpoint>
                      </call>
                      <log level="full">
-					 <property expression="$ctx:corid" name="----CorrelationId----"/>
+                        <property expression="$ctx:corid" name="----CorrelationId----"/>
                         <property name="----addSubscriberResponse----" value="Response"/>
                      </log>
                      <property expression="//result/resultCode"
@@ -1173,13 +830,13 @@
                               </args>
                            </payloadFactory>
                            <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
+                              <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceRequest----" value="Request"/>
                            </log>
                            <header name="Action" scope="transport" value="Notification"/>
                            <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
                            <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-                            <header xmlns:m0="http://services.samples"
+                           <header xmlns:m0="http://services.samples"
                                    xmlns:m1="http://services.samples/xsd"
                                    expression="$ctx:LOCATION_PROP"
                                    name="To"/>
@@ -1203,7 +860,7 @@
                               </endpoint>
                            </call>
                            <log level="full">
-						   <property expression="$ctx:corid" name="----CorrelationId----"/>
+                              <property expression="$ctx:corid" name="----CorrelationId----"/>
                               <property name="----subscribeServiceResponse----" value="Response"/>
                            </log>
                            <property expression="//result/resultCode"
@@ -1221,12 +878,12 @@
                                  <clone continueParent="true">
                                     <target sequence="pcrf_downstream"/>
                                  </clone>
-                                 <payloadFactory description="login_payload" media-type="xml">
+                                 <payloadFactory description="updateSubscriberQuota_payload" media-type="xml">
                                     <format>
                                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap">
                                           <soapenv:Header/>
                                           <soapenv:Body>
-                                             <rm:rechargeSubscriberQuota>
+                                             <rm:updateSubscriberQuota>
                                                 <inPara>
                                                    <subscriber>
                                                       <attribute>
@@ -1234,22 +891,22 @@
                                                          <value>$1</value>
                                                       </attribute>
                                                    </subscriber>
-                                                   <rechargedQuota>
+                                                   <subscriberQuota>
                                                       <attribute>
                                                          <key>qtaName</key>
                                                          <value>$2</value>
                                                       </attribute>
                                                       <attribute>
-                                                         <key>rechargedValue</key>
+                                                         <key>qtaValue</key>
                                                          <value>$3</value>
                                                       </attribute>
                                                       <attribute>
-                                                         <key>qtaClass</key>
+                                                         <key>srvName</key>
                                                          <value>$4</value>
                                                       </attribute>
-                                                   </rechargedQuota>
+                                                   </subscriberQuota>
                                                 </inPara>
-                                             </rm:rechargeSubscriberQuota>
+                                             </rm:updateSubscriberQuota>
                                           </soapenv:Body>
                                        </soapenv:Envelope>
                                     </format>
@@ -1257,20 +914,20 @@
                                        <arg evaluator="xml" expression="$ctx:msisdn"/>
                                        <arg evaluator="xml" expression="$ctx:quotaName"/>
                                        <arg evaluator="xml" expression="$ctx:rechargedValue"/>
-                                       <arg evaluator="xml" expression="$ctx:qtaClass"/>
+                                       <arg evaluator="xml" expression="$ctx:srvName"/>
                                     </args>
                                  </payloadFactory>
                                  <log level="full">
-								 <property expression="$ctx:corid" name="----CorrelationId----"/>
-                                    <property name="----REQUEST rechargeSubscriberQuota----" value="Request"/>
+                                    <property expression="$ctx:corid" name="----CorrelationId----"/>
+                                    <property name="----REQUEST updateSubscriberQuota----" value="Request"/>
                                  </log>
                                  <header name="Action" scope="transport" value="Notification"/>
                                  <property name="messageType" scope="axis2" type="STRING" value="text/xml"/>
                                  <property expression="$ctx:LOCATION_PROP" name="uri.var.httpendpointurl"/>
-                               <header xmlns:m0="http://services.samples"
-                                   xmlns:m1="http://services.samples/xsd"
-                                   expression="$ctx:LOCATION_PROP"
-                                   name="To"/>
+                                 <header xmlns:m0="http://services.samples"
+                                         xmlns:m1="http://services.samples/xsd"
+                                         expression="$ctx:LOCATION_PROP"
+                                         name="To"/>
                                  <call>
                                     <endpoint name="PCRFEP">
                                        <default format="soap11">
@@ -1291,8 +948,8 @@
                                     </endpoint>
                                  </call>
                                  <log level="full">
-								 <property expression="$ctx:corid" name="----CorrelationId----"/>
-                                    <property name="----RESPONSE rechargeSubscriberQuota----" value="Response"/>
+                                    <property expression="$ctx:corid" name="----CorrelationId----"/>
+                                    <property name="----RESPONSE updateSubscriberQuota----" value="Response"/>
                                  </log>
                                  <property expression="//result/resultCode"
                                            name="resultCodeRechargeQuota"
@@ -1306,7 +963,7 @@
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
                                        <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
-                                       <property name="interfaceName" type="STRING" value="rechargeSubscriberQuota"/>
+                                       <property name="interfaceName" type="STRING" value="updateSubscriberQuota"/>
                                        <payloadFactory media-type="xml">
                                           <format>
                                              <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -1578,7 +1235,10 @@
                <respond/>
             </else>
          </filter>
-		
+         <log level="custom">
+            <property name=" ************ FLOW END *************" value="UNICA"/>
+            <property expression="$ctx:ResponsePayload" name="RESPONSE BACK TO UNICA "/>
+         </log>
       </inSequence>
       <faultSequence>
          <log level="custom">

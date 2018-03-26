@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequence xmlns="http://ws.apache.org/ns/synapse" name="pcrf_downstream">
-   <log level="full"/>
-   <log level="custom">
-      <property name="logging" value="pcrf_downstream call"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="corelationID"
-                expression="get-property('corid')"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="interfaceName"
-                expression="get-property('interfaceName')"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="resultCode"
-                expression="get-property('resultCode')"/>
-   </log>
-   <dbreport>
-      <connection>
-         <pool>
-            <dsName>jdbc/pcrf</dsName>
-         </pool>
-      </connection>
-      <statement>
-         <sql>INSERT INTO pcrf_downstream_logs(correlation_id,interface_name,result_code,result_code_des,logging_timestamp) VALUES (?,?,?,?,NOW())</sql>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('corid')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('interfaceName')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('resultCode')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('resultCodeDes')"
-                    type="VARCHAR"/>
-      </statement>
-   </dbreport>
+<sequence name="pcrf_downstream" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="full"/>
+    <log level="custom">
+        <property name="logging" value="pcrf_downstream call"/>
+        <property expression="get-property('corid')" name="corelationID" xmlns:ns="http://org.apache.synapse/xsd"/>
+        <property expression="get-property('interfaceName')"
+            name="interfaceName" xmlns:ns="http://org.apache.synapse/xsd"/>
+        <property expression="get-property('resultCode')"
+            name="resultCode" xmlns:ns="http://org.apache.synapse/xsd"/>
+    </log>
+    <dbreport>
+        <connection>
+            <pool>
+                <dsName>jdbc/pcrf</dsName>
+            </pool>
+        </connection>
+        <statement>
+            <sql><![CDATA[INSERT INTO pcrf_downstream_logs(correlation_id,interface_name,result_code,result_code_des,logging_timestamp) VALUES (?,?,?,?,NOW())]]></sql>
+            <parameter expression="get-property('corid')" type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('interfaceName')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('resultCode')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('resultCodeDes')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+        </statement>
+    </dbreport>
 </sequence>

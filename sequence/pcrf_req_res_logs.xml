@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sequence xmlns="http://ws.apache.org/ns/synapse" name="pcrf_req_res_logs">
-   <log level="full"/>
-   <log level="custom">
-      <property name="UNICA" value="pcrf_req_res_logs"/>
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="corelationID"
-                expression="get-property('corid')"/>
-      
-      <property xmlns:ns="http://org.apache.synapse/xsd"
-                name="RESPONSE BACK TO UNICA"
-                expression="get-property('ResponsePayload')"/>
-				
-		<property name=" ************ FLOW END *************" value="UNICA" />
-   </log>
-   <dbreport>
-      <connection>
-         <pool>
-            <dsName>jdbc/pcrf</dsName>
-         </pool>
-      </connection>
-      <statement>
-         <sql>
+<sequence name="pcrf_req_res_logs" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="full"/>
+    <log level="custom">
+        <property name="UNICA" value="pcrf_req_res_logs"/>
+        <property expression="get-property('corid')" name="corelationID" xmlns:ns="http://org.apache.synapse/xsd"/>
+        <property expression="get-property('ResponsePayload')"
+            name="RESPONSE BACK TO UNICA" xmlns:ns="http://org.apache.synapse/xsd"/>
+        <property name=" ************ FLOW END *************" value="UNICA"/>
+    </log>
+    <dbreport>
+        <connection>
+            <pool>
+                <dsName>jdbc/pcrf</dsName>
+            </pool>
+        </connection>
+        <statement>
+            <sql><![CDATA[
 			INSERT INTO pcrf_req_res_logs(correlation_id,request,response, request_datetime, response_datetime, status) VALUES (?,?,?,?,NOW(),?)
-		</sql>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('corid')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('requestBody')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('ResponsePayload')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('requestDatetime')"
-                    type="VARCHAR"/>
-         <parameter xmlns:ns="http://org.apache.synapse/xsd"
-                    expression="get-property('resStatus')"
-                    type="VARCHAR"/>
-      </statement>
-   </dbreport>
+		]]></sql>
+            <parameter expression="get-property('corid')" type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('requestBody')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('ResponsePayload')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('requestDatetime')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+            <parameter expression="get-property('resStatus')"
+                type="VARCHAR" xmlns:ns="http://org.apache.synapse/xsd"/>
+        </statement>
+    </dbreport>
 </sequence>
