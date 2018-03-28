@@ -424,7 +424,7 @@
                                name="resultCodeDes"
                                scope="default"
                                type="STRING"/>
-                     <filter xpath="get-property('resultCodeSubSer')='0'">
+                     <filter xpath="$ctx:resultCodeSubSer='0'">
                         <then>
                            <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="subscribeService"/>
@@ -511,7 +511,7 @@
                                      name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
-                           <filter xpath="get-property('resultCodeRechargeQuota')='0'">
+                           <filter xpath="$ctx:resultCodeRechargeQuota='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="OK"/>
                                  <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -556,7 +556,7 @@
                                  <respond/>
                               </then>
                            </filter>
-                           <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
+                           <filter xpath="$ctx:resultCodeRechargeQuota!='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="OK"/>
                                  <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -648,7 +648,7 @@
                      </filter>
                   </then>
                </filter>
-               <filter xpath="get-property('resultCodeSubInfo')='12302'">
+               <filter xpath="$ctx:resultCodeSubInfo='12302'">
                   <then>
                      <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
                      <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
@@ -773,7 +773,7 @@
                                name="resultCodeDes"
                                scope="default"
                                type="STRING"/>
-                     <filter xpath="get-property('resultCodeAddSub')='0'">
+                     <filter xpath="$ctx:resultCodeAddSub='0'">
                         <then>
                            <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="addSubscriber"/>
@@ -871,7 +871,7 @@
                                      name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
-                           <filter xpath="get-property('resultCodeSubSer')='0'">
+                           <filter xpath="$ctx:resultCodeSubSer='0'">
                               <then>
                                  <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
@@ -959,7 +959,7 @@
                                            name="resultCodeDes"
                                            scope="default"
                                            type="STRING"/>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')='0'">
+                                 <filter xpath="$ctx:resultCodeRechargeQuota='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
                                        <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -1004,7 +1004,7 @@
                                        <respond/>
                                     </then>
                                  </filter>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
+                                 <filter xpath="$ctx:resultCodeRechargeQuota!='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="KO"/>
                                        <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
@@ -1051,7 +1051,7 @@
                                  </filter>
                               </then>
                            </filter>
-                           <filter xpath="get-property('resultCodeSubSer')!='0'">
+                           <filter xpath="$ctx:resultCodeSubSer!='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="KO"/>
                                  <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
@@ -1098,7 +1098,7 @@
                            </filter>
                         </then>
                      </filter>
-                     <filter xpath="get-property('resultCodeAddSub')!='0'">
+                     <filter xpath="$ctx:resultCodeAddSub!='0'">
                         <then>
                            <property name="resStatus" type="STRING" value="KO"/>
                            <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
@@ -1145,7 +1145,7 @@
                      </filter>
                   </then>
                </filter>
-               <filter xpath="get-property('resultCodeSubInfo')!='0' and get-property('resultCodeSubInfo')!='12302'">
+               <filter xpath="$ctx:resultCodeSubInfo!='0' and $ctx:resultCodeSubInfo!='12302'">
                   <then>
                      <property name="resStatus" type="STRING" value="KO"/>
                      <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
@@ -1372,7 +1372,7 @@
                                name="resultCodeDes"
                                scope="default"
                                type="STRING"/>
-                     <filter xpath="get-property('resultCodeSubSer')='0'">
+                     <filter xpath="$ctx:resultCodeSubSer='0'">
                         <then>
                            <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="subscribeService"/>
@@ -1459,7 +1459,7 @@
                                      name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
-                           <filter xpath="get-property('resultCodeRechargeQuota')='0'">
+                           <filter xpath="$ctx:resultCodeRechargeQuota='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="OK"/>
                                  <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -1504,7 +1504,7 @@
                                  <respond/>
                               </then>
                            </filter>
-                           <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
+                           <filter xpath="$ctx:resultCodeRechargeQuota!='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="OK"/>
                                  <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -1596,7 +1596,7 @@
                      </filter>
                   </then>
                </filter>
-               <filter xpath="get-property('resultCodeSubInfo')='12302'">
+               <filter xpath="$ctx:resultCodeSubInfo='12302'">
                   <then>
                      <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
                      <property name="interfaceName" type="STRING" value="getSubscriberAllInf"/>
@@ -1721,7 +1721,7 @@
                                name="resultCodeDes"
                                scope="default"
                                type="STRING"/>
-                     <filter xpath="get-property('resultCodeAddSub')='0'">
+                     <filter xpath="$ctx:resultCodeAddSub='0'">
                         <then>
                            <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
                            <property name="interfaceName" type="STRING" value="addSubscriber"/>
@@ -1819,7 +1819,7 @@
                                      name="resultCodeDes"
                                      scope="default"
                                      type="STRING"/>
-                           <filter xpath="get-property('resultCodeSubSer')='0'">
+                           <filter xpath="$ctx:resultCodeSubSer='0'">
                               <then>
                                  <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
                                  <property name="interfaceName" type="STRING" value="subscribeService"/>
@@ -1907,7 +1907,7 @@
                                            name="resultCodeDes"
                                            scope="default"
                                            type="STRING"/>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')='0'">
+                                 <filter xpath="$ctx:resultCodeRechargeQuota='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="OK"/>
                                        <property expression="$ctx:resultCodeRechargeQuota" name="resultCode"/>
@@ -1952,7 +1952,7 @@
                                        <respond/>
                                     </then>
                                  </filter>
-                                 <filter xpath="get-property('resultCodeRechargeQuota')!='0'">
+                                 <filter xpath="$ctx:resultCodeRechargeQuota!='0'">
                                     <then>
                                        <property name="resStatus" type="STRING" value="KO"/>
                                        <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
@@ -1999,7 +1999,7 @@
                                  </filter>
                               </then>
                            </filter>
-                           <filter xpath="get-property('resultCodeSubSer')!='0'">
+                           <filter xpath="$ctx:resultCodeSubSer!='0'">
                               <then>
                                  <property name="resStatus" type="STRING" value="KO"/>
                                  <property expression="$ctx:resultCodeSubSer" name="resultCode"/>
@@ -2046,7 +2046,7 @@
                            </filter>
                         </then>
                      </filter>
-                     <filter xpath="get-property('resultCodeAddSub')!='0'">
+                     <filter xpath="$ctx:resultCodeAddSub!='0'">
                         <then>
                            <property name="resStatus" type="STRING" value="KO"/>
                            <property expression="$ctx:resultCodeAddSub" name="resultCode"/>
@@ -2093,7 +2093,7 @@
                      </filter>
                   </then>
                </filter>
-               <filter xpath="get-property('resultCodeSubInfo')!='0' and get-property('resultCodeSubInfo')!='12302'">
+               <filter xpath="$ctx:resultCodeSubInfo!='0' and $ctx:resultCodeSubInfo!='12302'">
                   <then>
                      <property name="resStatus" type="STRING" value="KO"/>
                      <property expression="$ctx:resultCodeSubInfo" name="resultCode"/>
